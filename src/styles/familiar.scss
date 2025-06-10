@@ -1,0 +1,244 @@
+/**
+ * Foundry Familiar Styles
+ * CSS for AI assistant UI components
+ */
+
+.familiar-dialog {
+  .dialog-content {
+    padding: 1rem;
+    min-height: 300px;
+  }
+
+  .familiar-prompt {
+    width: 100%;
+    min-height: 100px;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+    }
+  }
+
+  .familiar-response {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    background: var(--color-bg-alt);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+
+    &:empty::before {
+      content: "Ask the Familiar something...";
+      color: var(--color-text-light);
+      font-style: italic;
+    }
+  }
+
+  .familiar-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+
+    button {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--color-border-light);
+      border-radius: 4px;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--color-bg-alt);
+        border-color: var(--color-primary);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.primary {
+        background: var(--color-primary);
+        color: var(--color-text-light);
+        border-color: var(--color-primary);
+
+        &:hover {
+          background: var(--color-primary-dark);
+        }
+      }
+    }
+  }
+}
+
+.familiar-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  
+  &.connecting {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: var(--color-warning);
+  }
+
+  &.connected {
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: var(--color-success);
+  }
+
+  &.error {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: var(--color-danger);
+  }
+
+  .status-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    
+    &.connecting {
+      background: var(--color-warning);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    &.connected {
+      background: var(--color-success);
+    }
+
+    &.error {
+      background: var(--color-danger);
+    }
+  }
+}
+
+.familiar-tools {
+  margin: 1rem 0;
+  
+  .tool-list {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .tool-item {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    background: var(--color-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--color-bg-alt);
+      border-color: var(--color-primary);
+    }
+
+    .tool-name {
+      font-weight: bold;
+      color: var(--color-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .tool-description {
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+      margin-bottom: 0.25rem;
+    }
+
+    .tool-params {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Chat message styling for Familiar responses
+.chat-message {
+  .familiar-response {
+    .familiar-icon {
+      display: inline-block;
+      margin-right: 0.5rem;
+      font-size: 1.2em;
+    }
+
+    .familiar-content {
+      line-height: 1.4;
+      
+      p {
+        margin: 0.5rem 0;
+        
+        &:first-child {
+          margin-top: 0;
+        }
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Sidebar integration
+#sidebar {
+  .familiar-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      background: var(--color-bg-alt);
+      color: var(--color-primary);
+    }
+
+    .familiar-icon {
+      font-size: 1.1em;
+    }
+
+    .familiar-label {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Import settings dialog styles
+@import 'settings-dialog';

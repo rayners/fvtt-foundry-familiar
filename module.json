@@ -1,0 +1,36 @@
+{
+  "id": "foundry-familiar",
+  "name": "foundry-familiar",
+  "title": "Foundry Familiar",
+  "description": "AI-powered assistant for Foundry VTT with configurable LLM integration, comprehensive tool system, and campaign analysis capabilities",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "authors": [
+    {
+      "name": "David Raynes",
+      "discord": "rayners78",
+      "url": "https://github.com/rayners"
+    }
+  ],
+  "esmodules": ["module.js"],
+  "styles": ["styles/familiar.css"],
+  "templates": ["templates/settings-dialog.hbs"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "socket": true,
+  "url": "https://github.com/rayners/fvtt-familiar",
+  "manifest": "https://github.com/rayners/fvtt-familiar/releases/latest/download/module.json",
+  "download": "https://github.com/rayners/fvtt-familiar/releases/latest/download/module.zip",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "changelog": "CHANGELOG.md"
+}

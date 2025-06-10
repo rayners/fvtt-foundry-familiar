@@ -1,0 +1,390 @@
+// Settings dialog styles for Foundry Familiar
+
+.familiar-settings {
+  .window-content {
+    padding: 0;
+  }
+  
+  // Tab navigation styles
+  .sheet-tabs {
+    flex: none;
+    height: auto;
+    margin: 0;
+    padding: 0 1rem;
+    background: var(--color-bg-header);
+    border-bottom: 1px solid var(--color-border-light-2);
+    
+    .item {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--color-text-light-6);
+      background: transparent;
+      transition: all 0.2s ease;
+      
+      i {
+        margin-right: 0.5rem;
+      }
+      
+      &:hover {
+        color: var(--color-text-light-primary);
+        background: var(--color-bg-option);
+      }
+      
+      &.active {
+        color: var(--color-text-dark-primary);
+        border-bottom-color: var(--color-border-highlight);
+        background: var(--color-bg-option);
+      }
+    }
+  }
+  
+  .sheet-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    
+    .tab {
+      display: none;
+      
+      &.active {
+        display: block;
+      }
+    }
+  }
+  
+  .sheet-footer {
+    flex: none;
+    padding: 1rem;
+    background: var(--color-bg-header);
+    border-top: 1px solid var(--color-border-light-2);
+    
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .save-button {
+      background: var(--color-border-highlight);
+      color: white;
+      border: 1px solid var(--color-border-highlight);
+
+      &:hover:not(:disabled) {
+        background: var(--color-border-highlight-dark);
+        border-color: var(--color-border-highlight-dark);
+      }
+    }
+
+    .reset-button {
+      background: var(--color-bg-option);
+      color: var(--color-text-dark-primary);
+      border: 1px solid var(--color-border-light-2);
+
+      &:hover:not(:disabled) {
+        background: var(--color-bg-option-hover);
+        border-color: var(--color-border-light-1);
+      }
+    }
+  }
+  
+  // Familiar preview styles
+  .familiar-preview {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border-light-2);
+    border-radius: 4px;
+    
+    h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9em;
+      color: var(--color-text-light-6);
+    }
+    
+    .preview-message {
+      padding: 0.75rem;
+      background: var(--color-bg-option);
+      border-radius: 4px;
+      font-size: 0.9em;
+      line-height: 1.4;
+      
+      strong {
+        color: var(--color-text-dark-primary);
+      }
+      
+      em {
+        color: var(--color-text-light-6);
+      }
+    }
+  }
+  
+  // Reference commands styling
+  .reference-commands {
+    h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: 1em;
+      color: var(--color-text-dark-primary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--color-border-light-2);
+      padding-bottom: 0.5rem;
+    }
+    
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      
+      li {
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        
+        code {
+          background: var(--color-bg-alt);
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+          font-size: 0.85em;
+          color: var(--color-text-dark-primary);
+          white-space: nowrap;
+          flex-shrink: 0;
+          width: 240px;
+          display: inline-block;
+        }
+        
+        span {
+          color: var(--color-text-light-6);
+          font-size: 0.9em;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+
+  .familiar-settings-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    .settings-section {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border: 1px solid var(--color-border-light-1);
+      border-radius: 4px;
+      background: var(--color-bg-option);
+
+      h3 {
+        margin: 0 0 1rem 0;
+        color: var(--color-text-dark-primary);
+        font-size: 1.1em;
+        border-bottom: 1px solid var(--color-border-light-2);
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+
+      label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        color: var(--color-text-dark-primary);
+      }
+      
+
+      input, select, textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--color-border-light-2);
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 0.9em;
+
+        &:focus {
+          outline: none;
+          border-color: var(--color-border-highlight);
+          box-shadow: 0 0 0 2px var(--color-shadow-highlight);
+        }
+
+        &[readonly] {
+          background-color: var(--color-bg-btn);
+          color: var(--color-text-light-6);
+        }
+      }
+
+      select {
+        // Fix text cutoff issues with explicit height and line-height
+        height: 2.25rem; // Explicit height prevents text cutoff
+        line-height: 1; // Critical fix for text cutoff prevention
+        background-color: var(--color-bg);
+        color: var(--color-text-dark-primary);
+        cursor: pointer;
+        
+        option {
+          padding: 0.5rem;
+          background-color: var(--color-bg);
+          color: var(--color-text-dark-primary);
+        }
+      }
+
+      input[type="range"] {
+        width: calc(100% - 50px);
+        margin-right: 10px;
+      }
+
+      .range-value {
+        display: inline-block;
+        width: 40px;
+        text-align: center;
+        font-weight: 500;
+        color: var(--color-text-dark-primary);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      
+      // Special styling for system prompt - full width vertical layout
+      &.system-prompt {
+        display: flex;
+        flex-direction: column;
+        
+        label {
+          font-size: 1em;
+          font-weight: 600;
+          margin-bottom: 0.75rem;
+          width: 100%;
+        }
+        
+        #systemPrompt {
+          min-height: 140px;
+          font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+          font-size: 0.9em;
+          line-height: 1.4;
+          width: 100%;
+          box-sizing: border-box;
+          resize: vertical;
+        }
+        
+        .hint {
+          margin-top: 0.5rem;
+        }
+      }
+
+      .hint {
+        font-size: 0.8em;
+        color: var(--color-text-light-6);
+        margin: 0.25rem 0 0 0;
+        font-style: italic;
+      }
+
+      &.checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+
+        input[type="checkbox"] {
+          width: auto;
+          margin: 0;
+          flex-shrink: 0;
+          margin-top: 0.1rem;
+        }
+
+        label {
+          margin-bottom: 0;
+          flex-grow: 1;
+        }
+
+        .hint {
+          margin-left: 1.5rem;
+        }
+      }
+    }
+
+    .test-button {
+      background: var(--color-bg-option);
+      color: var(--color-text-dark-primary);
+      border: 1px solid var(--color-border-light-2);
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+
+      &:hover:not(:disabled) {
+        background: var(--color-bg-option-hover);
+      }
+
+      &.success {
+        background: #2d5016;
+        color: #90ff90;
+      }
+
+      &.error {
+        background: #5d1a1a;
+        color: #ff9090;
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Animation for range inputs
+input[type="range"] {
+  appearance: none;
+  height: 6px;
+  background: var(--color-bg-option);
+  border-radius: 3px;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--color-bg-btn);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--color-bg-btn-hover);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--color-bg-btn);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--color-bg-btn-hover);
+    }
+  }
+}

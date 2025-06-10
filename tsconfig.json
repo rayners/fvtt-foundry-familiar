@@ -1,0 +1,9 @@
+{
+  "extends": "@rayners/foundry-dev-tools/tsconfig",
+  "compilerOptions": {
+    "types": ["jquery"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
+  },
+  "include": ["src/**/*", "src/types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "test/**/*"]
+}

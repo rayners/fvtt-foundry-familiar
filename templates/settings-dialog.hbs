@@ -1,0 +1,215 @@
+<form class="familiar-settings-form">
+  <nav class="sheet-tabs tabs" data-group="main">
+    <a class="item" data-tab="connection">
+      <i class="fa-solid fa-globe"></i>
+      Connection
+    </a>
+    <a class="item" data-tab="behavior">
+      <i class="fa-solid fa-sliders"></i>
+      Behavior
+    </a>
+    <a class="item" data-tab="customization">
+      <i class="fa-solid fa-palette"></i>
+      Customization
+    </a>
+    <a class="item" data-tab="advanced">
+      <i class="fa-solid fa-cog"></i>
+      Advanced
+    </a>
+  </nav>
+
+  <section class="sheet-body">
+    <!-- Connection Tab -->
+    <div class="tab" data-group="main" data-tab="connection">
+      <div class="settings-section">
+        <h3>🌐 LLM Connection</h3>
+        
+        <div class="form-group">
+          <label for="endpoint-select">Endpoint Type:</label>
+          <select id="endpoint-select" name="endpoint-select" style="width: 100%;">
+            {{#each endpoints}}
+            <option value="{{value}}" data-type="{{type}}">{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="llmEndpoint">LLM Endpoint URL:</label>
+          <input type="url" id="llmEndpoint" name="llmEndpoint" value="{{llmEndpoint}}" 
+                 placeholder="http://localhost:11434/v1/chat/completions" />
+          <p class="hint">URL of your LLM API endpoint (OpenAI-compatible)</p>
+        </div>
+
+        <div class="form-group">
+          <label for="apiKey">API Key:</label>
+          <input type="password" id="apiKey" name="apiKey" value="{{apiKey}}" 
+                 placeholder="Leave empty for local endpoints" />
+          <p class="hint">API key for your LLM service (not needed for local endpoints like Ollama)</p>
+        </div>
+
+        <div class="form-group">
+          <label for="model-select">Model:</label>
+          <select id="model-select" name="model-select" style="width: 100%;">
+            {{#each models}}
+            <option value="{{value}}">{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="model">Model Name:</label>
+          <input type="text" id="model" name="model" value="{{model}}" 
+                 placeholder="llama3.2" />
+          <p class="hint">Model to use for requests</p>
+        </div>
+
+        <div class="form-group">
+          <button type="button" id="test-connection" class="test-button">
+            🔗 Test Connection
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Behavior Tab -->
+    <div class="tab" data-group="main" data-tab="behavior">
+      <div class="settings-section">
+        <h3>🎯 AI Behavior</h3>
+
+        <div class="form-group">
+          <label for="temperature">Temperature:</label>
+          <input type="range" id="temperature" name="temperature" value="{{temperature}}" 
+                 min="0" max="2" step="0.1" />
+          <span class="range-value">{{temperature}}</span>
+          <p class="hint">Controls creativity/randomness (0.0 = deterministic, 1.0 = creative, 2.0 = very creative)</p>
+        </div>
+
+        <div class="form-group">
+          <label for="maxTokens">Max Tokens:</label>
+          <input type="range" id="maxTokens" name="maxTokens" value="{{maxTokens}}" 
+                 min="50" max="2000" step="50" />
+          <span class="range-value">{{maxTokens}}</span>
+          <p class="hint">Maximum response length (higher = longer responses but slower)</p>
+        </div>
+
+        <div class="form-group system-prompt">
+          <label for="systemPrompt">System Prompt:</label>
+          <textarea id="systemPrompt" name="systemPrompt" rows="6" 
+                    placeholder="You are a helpful magical familiar assisting a game master.">{{systemPrompt}}</textarea>
+          <p class="hint">Personality and role instructions for your familiar</p>
+        </div>
+
+        <div class="form-group checkbox">
+          <input type="checkbox" id="enableToolCalls" name="enableToolCalls" 
+                 {{#if enableToolCalls}}checked{{/if}} />
+          <label for="enableToolCalls">Enable Tool System</label>
+          <p class="hint">Allow the AI to use tools to access Foundry data (disable for simple chat only)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customization Tab -->
+    <div class="tab" data-group="main" data-tab="customization">
+      <div class="settings-section">
+        <h3>🎭 Familiar Appearance</h3>
+
+        <div class="form-group">
+          <label for="familiarName">Familiar Name:</label>
+          <input type="text" id="familiarName" name="familiarName" value="{{familiarName}}" 
+                 placeholder="Familiar" />
+          <p class="hint">What to call your magical familiar</p>
+        </div>
+
+        <div class="form-group">
+          <label for="familiarIcon">Familiar Icon:</label>
+          <input type="text" id="familiarIcon" name="familiarIcon" value="{{familiarIcon}}" 
+                 placeholder="🧙" maxlength="4" />
+          <p class="hint">Emoji or symbol to represent your familiar (e.g., 🧙, 🦉, 🐱, ⭐)</p>
+        </div>
+
+        <div class="familiar-preview">
+          <h4>Preview:</h4>
+          <div class="preview-message">
+            <strong><span id="preview-icon">{{familiarIcon}}</span> <span id="preview-name">{{familiarName}}</span> says:</strong><br>
+            <em>Hello! I'm ready to assist you with your campaign.</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Tab -->
+    <div class="tab" data-group="main" data-tab="advanced">
+      <div class="settings-section">
+        <h3>🔧 Debug & Development</h3>
+
+        <div class="form-group checkbox">
+          <input type="checkbox" id="enableConsoleLogging" name="enableConsoleLogging" 
+                 {{#if enableConsoleLogging}}checked{{/if}} />
+          <label for="enableConsoleLogging">Enable Console Logging</label>
+          <p class="hint">Show detailed LLM conversation logs in browser console (useful for debugging)</p>
+        </div>
+
+        <div class="form-group">
+          <div class="reference-commands">
+            <h4>Quick Reference</h4>
+            <ul>
+              <li>
+                <code>game.familiar.ask(prompt)</code>
+                <span>Enhanced AI with tools</span>
+              </li>
+              <li>
+                <code>game.familiar.summon(prompt)</code>
+                <span>Simple prompt/response</span>
+              </li>
+              <li>
+                <code>/ask &lt;prompt&gt;</code>
+                <span>Chat command with tools</span>
+              </li>
+              <li>
+                <code>/familiar &lt;prompt&gt;</code>
+                <span>Simple chat command</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="sheet-footer flexrow">
+    <button type="button" id="reset-defaults" class="reset-button">
+      🔄 Reset to Defaults
+    </button>
+    <button type="submit" class="save-button">
+      💾 Save Settings
+    </button>
+  </footer>
+</form>
+
+<script>
+// Update range value displays
+document.addEventListener('input', (event) => {
+  if (event.target.type === 'range') {
+    const valueSpan = event.target.nextElementSibling;
+    if (valueSpan && valueSpan.classList.contains('range-value')) {
+      valueSpan.textContent = event.target.value;
+    }
+  }
+});
+
+// Live preview updates
+document.addEventListener('input', (event) => {
+  if (event.target.id === 'familiarName') {
+    const previewName = document.getElementById('preview-name');
+    if (previewName) {
+      previewName.textContent = event.target.value || 'Familiar';
+    }
+  }
+  if (event.target.id === 'familiarIcon') {
+    const previewIcon = document.getElementById('preview-icon');
+    if (previewIcon) {
+      previewIcon.textContent = event.target.value || '🧙';
+    }
+  }
+});
+</script>
