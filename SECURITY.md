@@ -4,10 +4,10 @@
 
 Foundry Familiar is currently in alpha development. Security updates will be provided for:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.x   | ✅ Active support  |
-| < 0.1   | ❌ Not supported   |
+| Version | Supported         |
+| ------- | ----------------- |
+| 0.1.x   | ✅ Active support |
+| < 0.1   | ❌ Not supported  |
 
 ## Reporting a Vulnerability
 
@@ -38,16 +38,19 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### Data Privacy
 
 **Local AI Models (Ollama)**
+
 - ✅ All data stays on your computer
 - ✅ No external data transmission
 - ✅ Full user control over AI processing
 
 **Cloud AI Services (OpenAI, etc.)**
+
 - ⚠️ Campaign data sent to third-party services
 - ⚠️ Subject to provider's privacy policies
 - ⚠️ May be logged or used for service improvement
 
 **Module Data Collection**
+
 - ✅ No analytics or telemetry collected
 - ✅ No user tracking or identification
 - ✅ No automatic data transmission
@@ -55,6 +58,7 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### API Key Security
 
 **Best Practices**
+
 - Store API keys securely in Foundry's settings system
 - Never commit API keys to version control
 - Use environment variables for development
@@ -62,6 +66,7 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 - Monitor API usage for anomalies
 
 **Module Implementation**
+
 - API keys stored in Foundry's encrypted settings
 - Keys not logged or transmitted to unauthorized services
 - Settings marked as "restricted" (GM-only access)
@@ -69,11 +74,13 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### Network Security
 
 **HTTPS Enforcement**
+
 - All cloud API communications use HTTPS
 - Certificate validation enforced
 - No fallback to insecure protocols
 
 **Local Development**
+
 - Local AI services may use HTTP (localhost only)
 - No external access to local development servers
 - Clear warnings about development vs. production setups
@@ -81,11 +88,13 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### Input Validation
 
 **User Input**
+
 - All user prompts sanitized before AI transmission
 - Maximum length limits enforced
 - Injection attack prevention measures
 
 **API Responses**
+
 - AI responses filtered and validated
 - HTML/script injection prevention
 - Safe rendering in Foundry interface
@@ -93,11 +102,13 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### Access Control
 
 **Module Permissions**
+
 - Settings require GM permissions
 - API access restricted to authorized users
 - Clear permission boundaries enforced
 
 **Game System Integration**
+
 - Read-only access to journal entries
 - No modification of game data without explicit user action
 - Respect Foundry's permission system
@@ -114,11 +125,13 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### Third-Party Dependencies
 
 **AI Service Providers**
+
 - OpenAI, Anthropic, and similar services have their own security policies
 - Data processing occurs on their infrastructure
 - Subject to their terms of service and privacy policies
 
 **JavaScript Dependencies**
+
 - Module uses npm packages with known security scanning
 - Regular updates to address known vulnerabilities
 - Minimal dependency footprint to reduce attack surface
@@ -146,12 +159,14 @@ If you discover a security vulnerability in Foundry Familiar, please report it r
 ### Data Protection
 
 **GDPR Compliance**
+
 - Module processes minimal personal data
 - Users control all data shared with AI services
 - No automated profiling or decision making
 - Users can delete all stored settings
 
 **Privacy by Design**
+
 - Default to local AI models when possible
 - Clear disclosure of data transmission
 - User choice in privacy vs. convenience trade-offs

@@ -22,7 +22,7 @@ export class FamiliarManager {
     return {
       ask: this.askWithTools.bind(this),
       summon: this.summonFamiliar.bind(this),
-      settings: this.openSettings.bind(this)
+      settings: this.openSettings.bind(this),
     };
   }
 
@@ -45,29 +45,29 @@ export class FamiliarManager {
       const response = await this.llmService.sendRequest({
         model: settings.model,
         messages: [
-          { 
-            role: 'system', 
-            content: settings.systemPrompt
+          {
+            role: 'system',
+            content: settings.systemPrompt,
           },
-          { role: 'user', content: prompt }
+          { role: 'user', content: prompt },
         ],
         temperature: settings.temperature,
-        max_tokens: settings.maxTokens
+        max_tokens: settings.maxTokens,
       });
 
       const content = response.choices?.[0]?.message?.content || '🪄 The Familiar is silent.';
-      
+
       // Filter out thinking tags and convert markdown to HTML
       const filteredContent = content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
       const htmlContent = micromark(filteredContent);
-        
+
       await ChatMessage.create({
-        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>${htmlContent}`
+        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>${htmlContent}`,
       });
     } catch (error) {
       console.error('Familiar error:', error);
       await ChatMessage.create({
-        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ The familiar encountered a magical disturbance.`
+        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ The familiar encountered a magical disturbance.`,
       });
     }
   }
@@ -78,7 +78,7 @@ export class FamiliarManager {
   async askWithTools(prompt: string): Promise<void> {
     try {
       const settings = SettingsManager.getSettings();
-      
+
       // Check if tools are disabled
       if (!settings.enableToolCalls) {
         await this.summonFamiliar(prompt);
@@ -88,7 +88,7 @@ export class FamiliarManager {
       const systemPrompt = this.buildSystemPrompt();
       const conversationHistory: LLMMessage[] = [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: prompt }
+        { role: 'user', content: prompt },
       ];
 
       if (settings.enableConsoleLogging) {
@@ -103,43 +103,47 @@ export class FamiliarManager {
 
       while (iteration < maxIterations) {
         iteration++;
-        
+
         if (settings.enableConsoleLogging) {
           console.log(`\n🧙 === ITERATION ${iteration} ===`);
           console.log('🧙 Sending to LLM:', {
             messageCount: conversationHistory.length,
-            messages: conversationHistory.map(m => ({ role: m.role, contentLength: m.content.length }))
+            messages: conversationHistory.map(m => ({
+              role: m.role,
+              contentLength: m.content.length,
+            })),
           });
         }
-        
+
         const response = await this.llmService.sendRequest({
           model: settings.model,
           messages: conversationHistory,
           temperature: settings.temperature,
-          max_tokens: settings.maxTokens
+          max_tokens: settings.maxTokens,
         });
 
-        const content = response.choices?.[0]?.message?.content || '🪄 Nothing came through the veil.';
+        const content =
+          response.choices?.[0]?.message?.content || '🪄 Nothing came through the veil.';
         if (settings.enableConsoleLogging) {
           console.log(`🧙 Raw LLM Response:`, content);
         }
-        
+
         // Check for new tool call format
         const toolCallMatch = content.match(/TOOL_CALL:\s*(\w+)[\s\S]*?PARAMS:\s*(.+?)(?:\n|$)/);
-        
+
         if (!toolCallMatch) {
           // No tool call, this is the final response
           if (settings.enableConsoleLogging) {
             console.log('🧙 ✅ Final response (no tool call detected)');
             console.log('🧙 === CONVERSATION END ===\n');
           }
-          
+
           // Filter out thinking tags and convert markdown to HTML
           const filteredContent = content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
           const htmlContent = micromark(filteredContent);
-          
+
           await ChatMessage.create({
-            content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>${htmlContent}`
+            content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>${htmlContent}`,
           });
           return;
         }
@@ -147,20 +151,25 @@ export class FamiliarManager {
         // Execute tool call
         const toolName = toolCallMatch[1];
         const toolParams = toolCallMatch[2].trim();
-        
+
         if (settings.enableConsoleLogging) {
           console.log(`🧙 🔧 Tool Call Detected: ${toolName}("${toolParams}")`);
         }
-        
+
         // Show thinking indicator
-        (ui as any)?.notifications?.info(`${settings.familiarIcon} ${settings.familiarName} is thinking...`, { permanent: false });
-        
+        (ui as any)?.notifications?.info(
+          `${settings.familiarIcon} ${settings.familiarName} is thinking...`,
+          { permanent: false }
+        );
+
         let toolResult: string;
         try {
           toolResult = await this.toolSystem.executeTool(toolName, toolParams);
           if (settings.enableConsoleLogging) {
-            console.log(`🧙 ✅ Tool Result (${toolResult.length} chars):`, 
-              toolResult.length > 200 ? toolResult.substring(0, 200) + '...' : toolResult);
+            console.log(
+              `🧙 ✅ Tool Result (${toolResult.length} chars):`,
+              toolResult.length > 200 ? toolResult.substring(0, 200) + '...' : toolResult
+            );
           }
         } catch (err) {
           toolResult = `Error executing tool: ${(err as Error).message}`;
@@ -171,18 +180,18 @@ export class FamiliarManager {
 
         // Parse tool result to separate LLM and user formats
         const { llmFormat, userFormat } = this.parseToolResult(toolResult);
-        
+
         // Add tool call and result to conversation (LLM gets full result including IDs)
         conversationHistory.push(
           { role: 'assistant', content },
           { role: 'user', content: `Tool result: ${llmFormat}` }
         );
-        
+
         // Store user-friendly format for potential display
         if (settings.enableConsoleLogging && userFormat) {
           console.log(`🧙 👤 User-friendly tool result:`, userFormat);
         }
-        
+
         if (settings.enableConsoleLogging) {
           console.log(`🧙 📝 Added to conversation: assistant message + tool result`);
           console.log(`🧙 📊 Conversation now has ${conversationHistory.length} messages`);
@@ -194,9 +203,9 @@ export class FamiliarManager {
         console.log('🧙 ❌ Max iterations reached without final response');
         console.log('🧙 === CONVERSATION END (TIMEOUT) ===\n');
       }
-      
+
       await ChatMessage.create({
-        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ I got a bit confused trying to use my tools. Let me try a simpler approach.`
+        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ I got a bit confused trying to use my tools. Let me try a simpler approach.`,
       });
     } catch (error) {
       if (settings.enableConsoleLogging) {
@@ -205,11 +214,10 @@ export class FamiliarManager {
       }
       console.error('Familiar error:', error);
       await ChatMessage.create({
-        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ The familiar encountered a magical disturbance.`
+        content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ The familiar encountered a magical disturbance.`,
       });
     }
   }
-
 
   /**
    * Handle simple prompt (used by chat command)
@@ -220,14 +228,14 @@ export class FamiliarManager {
       const response = await this.llmService.sendRequest({
         model: settings.model,
         messages: [
-          { 
-            role: 'system', 
-            content: settings.systemPrompt
+          {
+            role: 'system',
+            content: settings.systemPrompt,
           },
-          { role: 'user', content: prompt }
+          { role: 'user', content: prompt },
         ],
         temperature: settings.temperature,
-        max_tokens: settings.maxTokens
+        max_tokens: settings.maxTokens,
       });
 
       return response.choices?.[0]?.message?.content || '🪄 The Familiar is silent.';
@@ -243,17 +251,17 @@ export class FamiliarManager {
   private parseToolResult(toolResult: string): { llmFormat: string; userFormat: string | null } {
     // Check if the result contains USER_VIEW section
     const userViewMatch = toolResult.match(/\n\nUSER_VIEW:\n([\s\S]*?)(?:\n\n|$)/);
-    
+
     if (userViewMatch) {
       // Extract the user-friendly version
       const userFormat = userViewMatch[1].trim();
-      
+
       // Remove the USER_VIEW section from LLM format
       const llmFormat = toolResult.replace(/\n\nUSER_VIEW:[\s\S]*$/, '').trim();
-      
+
       return { llmFormat, userFormat };
     }
-    
+
     // No user view found, return original as LLM format
     return { llmFormat: toolResult, userFormat: null };
   }
@@ -325,5 +333,4 @@ IMPORTANT: When you see "Tool result:" followed by data, that is the FINAL step.
 
 [After getting tool results, immediately provide your final answer]`;
   }
-
 }

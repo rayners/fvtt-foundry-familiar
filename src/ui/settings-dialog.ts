@@ -17,29 +17,34 @@ export class FamiliarSettingsDialog extends FormApplication {
       submitOnChange: false,
       resizable: true,
       classes: ['familiar-settings'],
-      tabs: [{ navSelector: '.tabs', contentSelector: '.sheet-body', initial: 'connection' }]
+      tabs: [{ navSelector: '.tabs', contentSelector: '.sheet-body', initial: 'connection' }],
     });
   }
 
   async getData() {
     const settings = SettingsManager.getSettings();
-    
+
     return {
       ...settings,
-      isLocalEndpoint: settings.llmEndpoint.includes('localhost') || settings.llmEndpoint.includes('127.0.0.1'),
+      isLocalEndpoint:
+        settings.llmEndpoint.includes('localhost') || settings.llmEndpoint.includes('127.0.0.1'),
       endpoints: [
-        { value: 'http://localhost:11434/v1/chat/completions', label: 'Ollama (Default)', type: 'local' },
+        {
+          value: 'http://localhost:11434/v1/chat/completions',
+          label: 'Ollama (Default)',
+          type: 'local',
+        },
         { value: 'http://localhost:3000/v1/chat/completions', label: 'Local Proxy', type: 'local' },
         { value: 'https://api.openai.com/v1/chat/completions', label: 'OpenAI', type: 'remote' },
-        { value: 'custom', label: 'Custom Endpoint', type: 'custom' }
+        { value: 'custom', label: 'Custom Endpoint', type: 'custom' },
       ],
       models: [
         { value: 'llama3.2', label: 'Llama 3.2 (Recommended for local)' },
         { value: 'qwen2.5', label: 'Qwen 2.5' },
         { value: 'gpt-4', label: 'GPT-4 (OpenAI)' },
         { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (OpenAI)' },
-        { value: 'custom', label: 'Custom Model Name' }
-      ]
+        { value: 'custom', label: 'Custom Model Name' },
+      ],
     };
   }
 
@@ -47,22 +52,22 @@ export class FamiliarSettingsDialog extends FormApplication {
     super.activateListeners(html);
 
     // Test connection button
-    html.find('#test-connection').click(async (event) => {
+    html.find('#test-connection').click(async event => {
       event.preventDefault();
       await this._testConnection(html);
     });
 
     // Reset to defaults button
-    html.find('#reset-defaults').click(async (event) => {
+    html.find('#reset-defaults').click(async event => {
       event.preventDefault();
       await this._resetDefaults(html);
     });
 
     // Endpoint dropdown change
-    html.find('#endpoint-select').change((event) => {
+    html.find('#endpoint-select').change(event => {
       const selectedValue = $(event.target).val() as string;
       const customField = html.find('#llmEndpoint');
-      
+
       if (selectedValue === 'custom') {
         customField.prop('readonly', false).focus();
       } else {
@@ -71,10 +76,10 @@ export class FamiliarSettingsDialog extends FormApplication {
     });
 
     // Model dropdown change
-    html.find('#model-select').change((event) => {
+    html.find('#model-select').change(event => {
       const selectedValue = $(event.target).val() as string;
       const customField = html.find('#model');
-      
+
       if (selectedValue === 'custom') {
         customField.prop('readonly', false).focus();
       } else {
@@ -88,12 +93,16 @@ export class FamiliarSettingsDialog extends FormApplication {
 
   private _initializeDropdowns(html: JQuery) {
     const settings = SettingsManager.getSettings();
-    
+
     // Set endpoint dropdown
     const endpointSelect = html.find('#endpoint-select');
     const endpointField = html.find('#llmEndpoint');
-    const predefinedEndpoints = ['http://localhost:11434/v1/chat/completions', 'http://localhost:3000/v1/chat/completions', 'https://api.openai.com/v1/chat/completions'];
-    
+    const predefinedEndpoints = [
+      'http://localhost:11434/v1/chat/completions',
+      'http://localhost:3000/v1/chat/completions',
+      'https://api.openai.com/v1/chat/completions',
+    ];
+
     if (predefinedEndpoints.includes(settings.llmEndpoint)) {
       endpointSelect.val(settings.llmEndpoint);
       endpointField.prop('readonly', true);
@@ -106,7 +115,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     const modelSelect = html.find('#model-select');
     const modelField = html.find('#model');
     const predefinedModels = ['llama3.2', 'qwen2.5', 'gpt-4', 'gpt-3.5-turbo'];
-    
+
     if (predefinedModels.includes(settings.model)) {
       modelSelect.val(settings.model);
       modelField.prop('readonly', true);
@@ -126,7 +135,7 @@ export class FamiliarSettingsDialog extends FormApplication {
       }
 
       ui.notifications.info('Foundry Familiar settings saved successfully!');
-      
+
       // Keep dialog open for further configuration
       this.render();
     } catch (error) {
@@ -138,16 +147,16 @@ export class FamiliarSettingsDialog extends FormApplication {
   private async _testConnection(html: JQuery) {
     const button = html.find('#test-connection');
     const originalText = button.text();
-    
+
     // Update button state
     button.prop('disabled', true).text('Testing...');
-    
+
     try {
       // Get current form values for testing
       const testEndpoint = html.find('#llmEndpoint').val() as string;
       const testApiKey = html.find('#apiKey').val() as string;
       const testModel = html.find('#model').val() as string;
-      
+
       // Validate required fields
       if (!testEndpoint || testEndpoint.trim() === '') {
         throw new Error('LLM Endpoint URL is required');
@@ -199,8 +208,9 @@ export class FamiliarSettingsDialog extends FormApplication {
   private async _resetDefaults(_html: JQuery) {
     const confirm = await Dialog.confirm({
       title: 'Reset to Defaults',
-      content: '<p>Are you sure you want to reset all Foundry Familiar settings to their default values?</p>',
-      defaultYes: false
+      content:
+        '<p>Are you sure you want to reset all Foundry Familiar settings to their default values?</p>',
+      defaultYes: false,
     });
 
     if (confirm) {

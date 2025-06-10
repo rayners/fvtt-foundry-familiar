@@ -6,7 +6,7 @@
 >
 > This module is in the very early stages of alpha development with minimal testing.
 > **Only tested with Ollama using the qwen3 model so far.**
-> 
+>
 > - Features are incomplete and APIs will change
 > - Bugs and breaking changes are expected
 > - Other AI services (OpenAI, etc.) are untested
@@ -29,11 +29,13 @@ Foundry Familiar adds an AI-powered assistant directly into your FoundryVTT inte
 This module is in the very early stages of alpha development with minimal testing.
 
 ### ⚠️ Testing Limitations
+
 - **Only tested with**: Ollama + qwen3 model
 - **Untested**: OpenAI, custom endpoints, other models
 - **Compatibility**: Limited verification across different setups
 
 ### Current Implementation Status
+
 - [x] Core LLM integration with Ollama/qwen3
 - [x] Basic settings configuration dialog
 - [x] Simple journal access and summarization
@@ -67,12 +69,14 @@ Development is tracked privately but bug reports are welcome via [GitHub Issues]
 ## Architecture
 
 ### Core Components
+
 - **TypeScript + Rollup**: Modern build system with type safety
 - **Settings Manager**: Centralized configuration with validation
 - **Tool System**: Extensible framework for AI-Foundry integration
 - **API Layer**: OpenAI-compatible chat completions interface
 
 ### Key Functions
+
 - `game.foundryFamiliar.ask()`: Main tool-enhanced interface with journal access
 - `game.foundryFamiliar.summon()`: Simple prompt/response interface
 - `game.foundryFamiliar.settings()`: Opens settings configuration dialog
@@ -114,18 +118,20 @@ https://github.com/rayners/fvtt-familiar/releases/latest/download/module.json
 ## Usage
 
 ### Command Line Interface
+
 ```javascript
 // Enhanced AI with tools (includes journal access)
-game.foundryFamiliar.ask("Summarize all journals in this campaign")
+game.foundryFamiliar.ask('Summarize all journals in this campaign');
 
 // Simple prompt/response
-game.foundryFamiliar.summon("Tell me about fantasy tavern names")
+game.foundryFamiliar.summon('Tell me about fantasy tavern names');
 
 // Open settings dialog
-game.foundryFamiliar.settings()
+game.foundryFamiliar.settings();
 ```
 
 ### Chat Commands
+
 ```
 /ask <prompt>      # Chat command with tools
 /familiar <prompt> # Simple chat command

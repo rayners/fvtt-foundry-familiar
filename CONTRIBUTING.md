@@ -14,17 +14,20 @@ Thank you for your interest in contributing to Foundry Familiar! This document p
 ### Development Setup
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/rayners/fvtt-familiar.git
    cd fvtt-familiar
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Build the module:**
+
    ```bash
    npm run build
    ```

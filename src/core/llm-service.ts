@@ -7,7 +7,6 @@ import type { LLMRequest, LLMResponse } from '../types/foundry-types';
 import { SettingsManager } from '../settings';
 
 export class LLMService {
-
   /**
    * Send request to LLM API using current settings
    */
@@ -25,19 +24,19 @@ export class LLMService {
         console.log('🌐 Max Tokens:', request.max_tokens);
         console.log('🌐 Request Body Size:', JSON.stringify(request).length, 'chars');
       }
-      
+
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       };
 
       if (settings.apiKey) {
         headers['Authorization'] = `Bearer ${settings.apiKey}`;
       }
-      
+
       const response = await fetch(settings.llmEndpoint, {
         method: 'POST',
         headers,
-        body: JSON.stringify(request)
+        body: JSON.stringify(request),
       });
 
       if (shouldLog) {
@@ -61,7 +60,7 @@ export class LLMService {
         }
         console.log('🌐 === LLM API RESPONSE COMPLETE ===');
       }
-      
+
       return data;
     } catch (error) {
       if (shouldLog) {
@@ -82,7 +81,7 @@ export class LLMService {
         model: settings.model,
         messages: [{ role: 'user', content: 'test' }],
         max_tokens: 5,
-        temperature: 0.1
+        temperature: 0.1,
       });
       return !!response.choices;
     } catch (error) {

@@ -32,7 +32,7 @@ export class SettingsManager {
       scope: 'world',
       config: false,
       type: String,
-      default: 'http://localhost:11434/v1/chat/completions'
+      default: 'http://localhost:11434/v1/chat/completions',
     });
 
     game.settings.register(this.SETTINGS_KEY, 'apiKey', {
@@ -41,7 +41,7 @@ export class SettingsManager {
       scope: 'world',
       config: false,
       type: String,
-      default: ''
+      default: '',
     });
 
     game.settings.register(this.SETTINGS_KEY, 'model', {
@@ -50,7 +50,7 @@ export class SettingsManager {
       scope: 'world',
       config: false,
       type: String,
-      default: 'qwen3'
+      default: 'qwen3',
     });
 
     // Behavior Configuration
@@ -64,8 +64,8 @@ export class SettingsManager {
       range: {
         min: 0.0,
         max: 2.0,
-        step: 0.1
-      }
+        step: 0.1,
+      },
     });
 
     game.settings.register(this.SETTINGS_KEY, 'maxTokens', {
@@ -78,8 +78,8 @@ export class SettingsManager {
       range: {
         min: 50,
         max: 2000,
-        step: 50
-      }
+        step: 50,
+      },
     });
 
     game.settings.register(this.SETTINGS_KEY, 'systemPrompt', {
@@ -88,7 +88,8 @@ export class SettingsManager {
       scope: 'world',
       config: false, // Hidden from game settings - only in custom dialog
       type: String,
-      default: 'You are a helpful magical familiar assisting a game master. You have access to tools to help answer questions about the campaign.'
+      default:
+        'You are a helpful magical familiar assisting a game master. You have access to tools to help answer questions about the campaign.',
     });
 
     // Debug & Development
@@ -98,7 +99,7 @@ export class SettingsManager {
       scope: 'world',
       config: false,
       type: Boolean,
-      default: false
+      default: false,
     });
 
     game.settings.register(this.SETTINGS_KEY, 'enableToolCalls', {
@@ -107,7 +108,7 @@ export class SettingsManager {
       scope: 'world',
       config: false,
       type: Boolean,
-      default: true
+      default: true,
     });
 
     // Familiar Customization
@@ -117,7 +118,7 @@ export class SettingsManager {
       scope: 'world',
       config: false, // Hidden from game settings - only in custom dialog
       type: String,
-      default: 'Familiar'
+      default: 'Familiar',
     });
 
     game.settings.register(this.SETTINGS_KEY, 'familiarIcon', {
@@ -126,17 +127,17 @@ export class SettingsManager {
       scope: 'world',
       config: false, // Hidden from game settings - only in custom dialog
       type: String,
-      default: '🧙'
+      default: '🧙',
     });
 
     // Custom settings menu for familiar configuration
     game.settings.registerMenu(this.SETTINGS_KEY, 'familiarConfig', {
       name: 'Familiar Configuration',
       label: 'Configure Familiar',
-      hint: 'Configure your magical familiar\'s LLM connection, behavior, and appearance',
+      hint: "Configure your magical familiar's LLM connection, behavior, and appearance",
       icon: 'fas fa-magic',
       type: FamiliarSettingsDialog,
-      restricted: true
+      restricted: true,
     });
   }
 
@@ -154,7 +155,7 @@ export class SettingsManager {
       enableConsoleLogging: game.settings.get(this.SETTINGS_KEY, 'enableConsoleLogging') as boolean,
       enableToolCalls: game.settings.get(this.SETTINGS_KEY, 'enableToolCalls') as boolean,
       familiarName: game.settings.get(this.SETTINGS_KEY, 'familiarName') as string,
-      familiarIcon: game.settings.get(this.SETTINGS_KEY, 'familiarIcon') as string
+      familiarIcon: game.settings.get(this.SETTINGS_KEY, 'familiarIcon') as string,
     };
   }
 
@@ -169,7 +170,7 @@ export class SettingsManager {
    * Set a single setting value
    */
   static async setSetting<K extends keyof FamiliarSettings>(
-    key: K, 
+    key: K,
     value: FamiliarSettings[K]
   ): Promise<void> {
     await game.settings.set(this.SETTINGS_KEY, key, value);
@@ -181,11 +182,11 @@ export class SettingsManager {
   static async testConnection(): Promise<{ success: boolean; message: string }> {
     try {
       const settings = this.getSettings();
-      
+
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       };
-      
+
       if (settings.apiKey) {
         headers['Authorization'] = `Bearer ${settings.apiKey}`;
       }
@@ -197,15 +198,15 @@ export class SettingsManager {
           model: settings.model,
           messages: [{ role: 'user', content: 'test' }],
           max_tokens: 5,
-          temperature: 0.1
-        })
+          temperature: 0.1,
+        }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
         return {
           success: false,
-          message: `Connection failed: ${response.status} ${response.statusText}\n${errorText}`
+          message: `Connection failed: ${response.status} ${response.statusText}\n${errorText}`,
         };
       }
 
@@ -213,18 +214,18 @@ export class SettingsManager {
       if (data.choices && data.choices.length > 0) {
         return {
           success: true,
-          message: 'Connection successful! The Familiar is ready to assist.'
+          message: 'Connection successful! The Familiar is ready to assist.',
         };
       } else {
         return {
           success: false,
-          message: 'Connection successful but response format unexpected'
+          message: 'Connection successful but response format unexpected',
         };
       }
     } catch (error) {
       return {
         success: false,
-        message: `Connection failed: ${(error as Error).message}`
+        message: `Connection failed: ${(error as Error).message}`,
       };
     }
   }
@@ -239,11 +240,12 @@ export class SettingsManager {
       model: 'llama3.2',
       temperature: 0.7,
       maxTokens: 600,
-      systemPrompt: 'You are a helpful magical familiar assisting a game master. You have access to tools to help answer questions about the campaign.',
+      systemPrompt:
+        'You are a helpful magical familiar assisting a game master. You have access to tools to help answer questions about the campaign.',
       enableConsoleLogging: false,
       enableToolCalls: true,
       familiarName: 'Familiar',
-      familiarIcon: '🧙'
+      familiarIcon: '🧙',
     };
 
     for (const [key, value] of Object.entries(defaultSettings)) {

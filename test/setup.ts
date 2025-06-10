@@ -13,22 +13,22 @@ const mockGame = {
   modules: new Map(),
   socket: {
     on: vi.fn(),
-    emit: vi.fn()
+    emit: vi.fn(),
   },
   time: {
-    worldTime: 0
-  }
+    worldTime: 0,
+  },
 };
 
 const mockHooks = {
   on: vi.fn(),
   once: vi.fn(),
   off: vi.fn(),
-  call: vi.fn()
+  call: vi.fn(),
 };
 
 const mockChatMessage = {
-  create: vi.fn().mockResolvedValue({ id: 'test-message' })
+  create: vi.fn().mockResolvedValue({ id: 'test-message' }),
 };
 
 // Mock Collection class
@@ -52,19 +52,19 @@ const createMockJournalPage = (id: string, name: string, content: string = '') =
   id,
   name,
   type: 'text',
-  text: { content }
+  text: { content },
 });
 
 // Mock journal entry
 const createMockJournalEntry = (name: string, content: string = '') => {
   const pages = new MockCollection<any>();
   pages.set('page1', createMockJournalPage('page1', 'Main Page', content));
-  
+
   return {
     id: `journal-${name.toLowerCase().replace(/\s+/g, '-')}`,
     name,
     pages,
-    folder: undefined
+    folder: undefined,
   };
 };
 
@@ -72,38 +72,46 @@ const createMockJournalEntry = (name: string, content: string = '') => {
 beforeEach(() => {
   // Clear all mocks
   vi.clearAllMocks();
-  
+
   // Setup fresh journal collection
   const journalCollection = new MockCollection<any>();
-  journalCollection.set('test-journal', createMockJournalEntry('Test Journal', '<p>Test content</p>'));
+  journalCollection.set(
+    'test-journal',
+    createMockJournalEntry('Test Journal', '<p>Test content</p>')
+  );
   journalCollection.set('empty-journal', createMockJournalEntry('Empty Journal', ''));
-  
+
   mockGame.journal = journalCollection;
-  
+
   // Setup globals
   global.game = mockGame as any;
   global.Hooks = mockHooks as any;
   global.ChatMessage = mockChatMessage as any;
-  
+
   // Mock fetch for LLM API calls
   global.fetch = vi.fn().mockResolvedValue({
     ok: true,
-    json: () => Promise.resolve({
-      choices: [{
-        message: {
-          content: 'Mock LLM response'
-        }
-      }]
-    }),
-    text: () => Promise.resolve('Mock response text')
+    json: () =>
+      Promise.resolve({
+        choices: [
+          {
+            message: {
+              content: 'Mock LLM response',
+            },
+          },
+        ],
+      }),
+    text: () => Promise.resolve('Mock response text'),
   });
 });
 
 // Helper functions for tests
 export const createMockLLMResponse = (content: string) => ({
-  choices: [{
-    message: { content }
-  }]
+  choices: [
+    {
+      message: { content },
+    },
+  ],
 });
 
 export const mockFailedLLMResponse = () => {
@@ -111,13 +119,18 @@ export const mockFailedLLMResponse = () => {
 };
 
 export const mockLLMResponseWithDelay = (content: string, delay: number = 100) => {
-  global.fetch = vi.fn().mockImplementation(() => 
-    new Promise(resolve => 
-      setTimeout(() => resolve({
-        ok: true,
-        json: () => Promise.resolve(createMockLLMResponse(content))
-      }), delay)
-    )
+  global.fetch = vi.fn().mockImplementation(
+    () =>
+      new Promise(resolve =>
+        setTimeout(
+          () =>
+            resolve({
+              ok: true,
+              json: () => Promise.resolve(createMockLLMResponse(content)),
+            }),
+          delay
+        )
+      )
   );
 };
 

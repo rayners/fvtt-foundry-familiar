@@ -24,7 +24,7 @@ export class DataModelAnalyzer {
       version: system.version || system.data?.version || 'Unknown',
       documentTypes: this.extractDocumentTypes(config),
       templateTypes: this.extractTemplateTypes(config),
-      dataModels: this.extractDataModels(config)
+      dataModels: this.extractDataModels(config),
     };
   }
 
@@ -52,9 +52,9 @@ export class DataModelAnalyzer {
         api: !!(module.api || (global as any)[id] || (window as any)[id]),
         configContributions: this.findConfigContributions(id),
         documentModifications: this.findDocumentModifications(id),
-        hookRegistrations: this.findModuleHooks(id)
+        hookRegistrations: this.findModuleHooks(id),
       };
-      
+
       modules.push(analysis);
     }
 
@@ -79,7 +79,9 @@ export class DataModelAnalyzer {
   } {
     const docClass = this.getDocumentClass(documentType);
     if (!docClass) {
-      throw new Error(`Unknown document type: ${documentType}. Available types: ${this.getAvailableDocumentTypes().join(', ')}`);
+      throw new Error(
+        `Unknown document type: ${documentType}. Available types: ${this.getAvailableDocumentTypes().join(', ')}`
+      );
     }
 
     // Get a sample document to analyze its structure
@@ -90,10 +92,12 @@ export class DataModelAnalyzer {
       documentType,
       documentClass: docClass.name,
       dataSchema: this.extractSchemaFields(docClass),
-      systemFields: sampleDoc?.system ? this.analyzeObjectStructure(sampleDoc.system, 'system') : {},
+      systemFields: sampleDoc?.system
+        ? this.analyzeObjectStructure(sampleDoc.system, 'system')
+        : {},
       moduleFields: this.extractModuleFields(sampleDoc),
       methods: this.extractClassMethods(docClass),
-      properties: this.extractClassProperties(docClass)
+      properties: this.extractClassProperties(docClass),
     };
   }
 
@@ -118,7 +122,7 @@ export class DataModelAnalyzer {
       documentConfig: this.extractDocumentConfig(config),
       canvasConfig: this.extractCanvasConfig(config),
       statusEffects: config.statusEffects || [],
-      conditions: config.Condition || {}
+      conditions: config.Condition || {},
     };
   }
 
@@ -142,14 +146,17 @@ export class DataModelAnalyzer {
       mixins: this.getMixins(docClass),
       dataFields: this.extractDataFields(docClass),
       validationRules: this.extractValidationRules(docClass),
-      defaultValues: this.extractDefaultValues(docClass)
+      defaultValues: this.extractDefaultValues(docClass),
     };
   }
 
   /**
    * Compare data models between different systems
    */
-  compareSystemModels(_systemId1: string, _systemId2: string): {
+  compareSystemModels(
+    _systemId1: string,
+    _systemId2: string
+  ): {
     commonFields: string[];
     uniqueToSystem1: string[];
     uniqueToSystem2: string[];
@@ -163,7 +170,7 @@ export class DataModelAnalyzer {
       uniqueToSystem1: [],
       uniqueToSystem2: [],
       differentImplementations: [],
-      compatibility: 'medium'
+      compatibility: 'medium',
     };
   }
 
@@ -171,7 +178,7 @@ export class DataModelAnalyzer {
 
   private extractDocumentTypes(config: any): Record<string, any> {
     const types: Record<string, any> = {};
-    
+
     if (config.Actor?.typeLabels) {
       types.Actor = config.Actor.typeLabels;
     }
@@ -181,26 +188,26 @@ export class DataModelAnalyzer {
     if (config.JournalEntry?.typeLabels) {
       types.JournalEntry = config.JournalEntry.typeLabels;
     }
-    
+
     return types;
   }
 
   private extractTemplateTypes(config: any): Record<string, any> {
     const templates: Record<string, any> = {};
-    
+
     if (config.Actor?.template) {
       templates.Actor = config.Actor.template;
     }
     if (config.Item?.template) {
       templates.Item = config.Item.template;
     }
-    
+
     return templates;
   }
 
   private extractDataModels(config: any): Record<string, any> {
     const models: Record<string, any> = {};
-    
+
     // Look for system-specific data model registrations
     if (config.Actor?.dataModels) {
       models.Actor = Object.keys(config.Actor.dataModels);
@@ -208,60 +215,58 @@ export class DataModelAnalyzer {
     if (config.Item?.dataModels) {
       models.Item = Object.keys(config.Item.dataModels);
     }
-    
+
     return models;
   }
 
   private findConfigContributions(moduleId: string): string[] {
     const contributions: string[] = [];
     const config = CONFIG;
-    
+
     // Look for module-specific CONFIG additions
     if ((config as any)[moduleId]) {
       contributions.push(`CONFIG.${moduleId}`);
     }
-    
+
     // Check for common integration points
-    const checkPaths = [
-      'Actor.typeLabels',
-      'Item.typeLabels',
-      'statusEffects',
-      'sounds',
-      'ui'
-    ];
-    
+    const checkPaths = ['Actor.typeLabels', 'Item.typeLabels', 'statusEffects', 'sounds', 'ui'];
+
     for (const path of checkPaths) {
       const value = this.getNestedProperty(config, path);
       if (value && typeof value === 'object') {
         const keys = Object.keys(value);
-        if (keys.some(key => key.includes(moduleId) || key.toLowerCase().includes(moduleId.toLowerCase()))) {
+        if (
+          keys.some(
+            key => key.includes(moduleId) || key.toLowerCase().includes(moduleId.toLowerCase())
+          )
+        ) {
           contributions.push(`CONFIG.${path}`);
         }
       }
     }
-    
+
     return contributions;
   }
 
   private findDocumentModifications(moduleId: string): string[] {
     const modifications: string[] = [];
-    
+
     // Check for document class modifications
     const documentTypes = ['Actor', 'Item', 'Scene', 'JournalEntry'];
-    
+
     for (const docType of documentTypes) {
       const docClass = (CONFIG as any)[docType]?.documentClass;
       if (docClass) {
         // Check if the class has been modified by looking for non-standard methods
         const prototype = docClass.prototype;
         const methods = Object.getOwnPropertyNames(prototype);
-        
+
         if (methods.some(method => method.includes(moduleId) || method.startsWith('_module'))) {
           modifications.push(`${docType} class methods`);
         }
       }
     }
-    
+
     return modifications;
   }
 
@@ -273,35 +278,35 @@ export class DataModelAnalyzer {
       `render${moduleId}`,
       `create${moduleId}`,
       `update${moduleId}`,
-      `delete${moduleId}`
+      `delete${moduleId}`,
     ];
   }
 
   private getDocumentClass(documentType: string): any {
     const typeMap: Record<string, any> = {
-      'actor': CONFIG.Actor?.documentClass,
-      'item': CONFIG.Item?.documentClass,
-      'scene': CONFIG.Scene?.documentClass,
-      'journal': CONFIG.JournalEntry?.documentClass,
-      'macro': CONFIG.Macro?.documentClass,
-      'playlist': CONFIG.Playlist?.documentClass,
-      'table': CONFIG.RollTable?.documentClass
+      actor: CONFIG.Actor?.documentClass,
+      item: CONFIG.Item?.documentClass,
+      scene: CONFIG.Scene?.documentClass,
+      journal: CONFIG.JournalEntry?.documentClass,
+      macro: CONFIG.Macro?.documentClass,
+      playlist: CONFIG.Playlist?.documentClass,
+      table: CONFIG.RollTable?.documentClass,
     };
-    
+
     return typeMap[documentType.toLowerCase()];
   }
 
   private getCollectionForType(documentType: string): Collection<any> | undefined {
     const collectionMap: Record<string, Collection<any>> = {
-      'actor': game.actors,
-      'item': game.items,
-      'scene': game.scenes,
-      'journal': game.journal,
-      'macro': game.macros,
-      'playlist': game.playlists,
-      'table': game.tables
+      actor: game.actors,
+      item: game.items,
+      scene: game.scenes,
+      journal: game.journal,
+      macro: game.macros,
+      playlist: game.playlists,
+      table: game.tables,
     };
-    
+
     return collectionMap[documentType.toLowerCase()];
   }
 
@@ -311,29 +316,29 @@ export class DataModelAnalyzer {
 
   private extractSchemaFields(docClass: any): Record<string, any> {
     const schema: Record<string, any> = {};
-    
+
     if (docClass.schema) {
       const schemaObj = docClass.schema;
       for (const [key, field] of Object.entries(schemaObj)) {
         schema[key] = {
           type: (field as any).constructor?.name || 'Unknown',
           required: (field as any).required || false,
-          initial: (field as any).initial
+          initial: (field as any).initial,
         };
       }
     }
-    
+
     return schema;
   }
 
   private analyzeObjectStructure(obj: any, prefix: string = ''): Record<string, any> {
     const structure: Record<string, any> = {};
-    
+
     if (!obj || typeof obj !== 'object') return structure;
-    
+
     for (const [key, value] of Object.entries(obj)) {
       const fullKey = prefix ? `${prefix}.${key}` : key;
-      
+
       if (value === null || value === undefined) {
         structure[fullKey] = 'null/undefined';
       } else if (typeof value === 'object' && !Array.isArray(value)) {
@@ -348,13 +353,13 @@ export class DataModelAnalyzer {
         structure[fullKey] = typeof value;
       }
     }
-    
+
     return structure;
   }
 
   private extractModuleFields(doc: any): Record<string, any> {
     const moduleFields: Record<string, any> = {};
-    
+
     if (doc?.flags) {
       for (const [moduleId, moduleData] of Object.entries(doc.flags)) {
         if (moduleData && typeof moduleData === 'object') {
@@ -362,62 +367,60 @@ export class DataModelAnalyzer {
         }
       }
     }
-    
+
     return moduleFields;
   }
 
   private extractClassMethods(docClass: any): string[] {
     const methods: string[] = [];
     const prototype = docClass.prototype;
-    
+
     const methodNames = Object.getOwnPropertyNames(prototype);
     for (const name of methodNames) {
       if (typeof prototype[name] === 'function' && name !== 'constructor') {
         methods.push(name);
       }
     }
-    
+
     return methods.sort();
   }
 
   private extractClassProperties(docClass: any): string[] {
     const properties: string[] = [];
     const prototype = docClass.prototype;
-    
+
     const propertyNames = Object.getOwnPropertyNames(prototype);
     for (const name of propertyNames) {
       if (typeof prototype[name] !== 'function') {
         properties.push(name);
       }
     }
-    
+
     return properties.sort();
   }
 
   private extractSystemConfig(config: any): Record<string, any> {
     const systemConfig: Record<string, any> = {};
-    
+
     // Common system configuration areas
-    const systemKeys = [
-      'Actor', 'Item', 'Combat', 'Dice', 'Token', 'ActiveEffect'
-    ];
-    
+    const systemKeys = ['Actor', 'Item', 'Combat', 'Dice', 'Token', 'ActiveEffect'];
+
     for (const key of systemKeys) {
       if (config[key]) {
         systemConfig[key] = {
           typeLabels: config[key].typeLabels,
           template: config[key].template,
-          dataModels: config[key].dataModels ? Object.keys(config[key].dataModels) : undefined
+          dataModels: config[key].dataModels ? Object.keys(config[key].dataModels) : undefined,
         };
       }
     }
-    
+
     return systemConfig;
   }
 
   private extractModuleConfig(config: any): Record<string, any> {
     const moduleConfig: Record<string, any> = {};
-    
+
     // Look for module-specific CONFIG additions
     for (const key of Object.keys(config)) {
       if (key.includes('-') || key.includes('_')) {
@@ -425,18 +428,18 @@ export class DataModelAnalyzer {
         moduleConfig[key] = typeof config[key];
       }
     }
-    
+
     return moduleConfig;
   }
 
   private extractDocumentConfig(config: any): Record<string, any> {
     return {
-      documentTypes: Object.keys(config).filter(key => 
-        config[key]?.documentClass || config[key]?.typeLabels
+      documentTypes: Object.keys(config).filter(
+        key => config[key]?.documentClass || config[key]?.typeLabels
       ),
-      embeddedDocuments: Object.keys(config).filter(key =>
-        config[key]?.embedded || key.includes('Embedded')
-      )
+      embeddedDocuments: Object.keys(config).filter(
+        key => config[key]?.embedded || key.includes('Embedded')
+      ),
     };
   }
 
@@ -444,22 +447,22 @@ export class DataModelAnalyzer {
     return {
       layers: config.Canvas?.layers ? Object.keys(config.Canvas.layers) : [],
       lightSources: config.Canvas?.lightSources || [],
-      gridTypes: config.Canvas?.gridTypes || []
+      gridTypes: config.Canvas?.gridTypes || [],
     };
   }
 
   private getInheritanceChain(docClass: any): string[] {
     const chain: string[] = [];
     let current = docClass;
-    
+
     while (current && current.name) {
       chain.push(current.name);
       current = Object.getPrototypeOf(current);
-      
+
       // Prevent infinite loops
       if (chain.length > 10) break;
     }
-    
+
     return chain;
   }
 
@@ -467,20 +470,20 @@ export class DataModelAnalyzer {
     // This is difficult to detect automatically in JavaScript
     // Return common Foundry mixins if detected
     const mixins: string[] = [];
-    
+
     if (Object.prototype.hasOwnProperty.call(docClass.prototype, 'sheet')) {
       mixins.push('SheetMixin');
     }
     if (Object.prototype.hasOwnProperty.call(docClass.prototype, 'testUserPermission')) {
       mixins.push('PermissionMixin');
     }
-    
+
     return mixins;
   }
 
   private extractDataFields(docClass: any): Record<string, any> {
     const fields: Record<string, any> = {};
-    
+
     if (docClass.defineSchema) {
       try {
         const schema = docClass.defineSchema();
@@ -488,14 +491,14 @@ export class DataModelAnalyzer {
           fields[key] = {
             type: (field as any).constructor?.name,
             required: (field as any).required,
-            initial: (field as any).initial
+            initial: (field as any).initial,
           };
         }
       } catch {
         // Schema definition might require instantiation
       }
     }
-    
+
     return fields;
   }
 
@@ -507,11 +510,11 @@ export class DataModelAnalyzer {
 
   private extractDefaultValues(docClass: any): Record<string, any> {
     const defaults: Record<string, any> = {};
-    
+
     if (docClass.defaultData) {
       Object.assign(defaults, docClass.defaultData);
     }
-    
+
     return defaults;
   }
 

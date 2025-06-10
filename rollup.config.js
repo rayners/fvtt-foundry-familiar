@@ -13,19 +13,19 @@ export default {
   output: {
     file: 'dist/module.js',
     format: 'es',
-    sourcemap: true
+    sourcemap: true,
   },
   plugins: [
     nodeResolve(),
     typescript({
       sourceMap: true,
-      declaration: false
+      declaration: false,
     }),
     scss({
       fileName: 'styles/familiar.css',
       outputStyle: 'compressed',
       watch: 'src/styles',
-      verbose: false
+      verbose: false,
     }),
     copy({
       targets: [
@@ -34,16 +34,18 @@ export default {
         { src: 'README.md', dest: 'dist' },
         { src: 'CHANGELOG.md', dest: 'dist' },
         { src: 'languages/*', dest: 'dist/languages' },
-        { src: 'templates/*', dest: 'dist/templates' }
-      ]
+        { src: 'templates/*', dest: 'dist/templates' },
+      ],
     }),
-    ...(isDevelopment ? [
-      serve({
-        contentBase: 'dist',
-        port: 30001
-      }),
-      livereload('dist')
-    ] : [])
+    ...(isDevelopment
+      ? [
+          serve({
+            contentBase: 'dist',
+            port: 30001,
+          }),
+          livereload('dist'),
+        ]
+      : []),
   ],
-  external: []
+  external: [],
 };

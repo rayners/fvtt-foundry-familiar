@@ -10,20 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Documentation improvements and user guides
 - Enhanced error handling and validation
 
 ### Changed
+
 - Improved settings dialog user experience
 - Better visual design for reference section
 
 ### Fixed
+
 - Dropdown text alignment issues in settings dialog
 - Connection test functionality improvements
 
 ## [0.1.0] - 2024-12-09
 
 ### Added
+
 - **Initial early alpha release - very limited testing**
 - Core LLM integration with OpenAI-compatible APIs
 - Support for AI services (testing status):
@@ -50,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy-first design with local AI model support
 
 ### Technical Features
+
 - OpenAI-compatible chat completions API integration
 - Extensible tool system for Foundry data access
 - Centralized settings management with validation
@@ -63,13 +68,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Development Notes
 
 ### Alpha Release Focus
+
 This initial release establishes the core foundation:
+
 - Reliable LLM integration across multiple services
 - Intuitive configuration interface
 - Basic tool system for journal access
 - Clean, extensible architecture for future features
 
 ### Known Limitations
+
 - **Very limited testing**: Only tested with Ollama/qwen3 combination
 - **Untested configurations**: OpenAI, custom endpoints, other models
 - UI components are functional but not yet polished
@@ -79,7 +87,9 @@ This initial release establishes the core foundation:
 - Testing coverage is incomplete
 
 ### Upcoming Features
+
 Future releases will focus on:
+
 - Enhanced tool system with broader Foundry integration
 - Improved UI/UX with better visual design
 - Advanced prompt engineering and context management
@@ -89,4 +99,4 @@ Future releases will focus on:
 
 ---
 
-*For detailed development history and technical decisions, see the development documentation.*
+_For detailed development history and technical decisions, see the development documentation._

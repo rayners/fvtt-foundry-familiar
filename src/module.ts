@@ -21,17 +21,17 @@ let familiarManager: FamiliarManager;
 Hooks.once('init', () => {
   // Register module settings first
   SettingsManager.registerSettings();
-  
+
   // Only log if console logging is enabled
   const settings = SettingsManager.getSettings();
   if (settings.enableConsoleLogging) {
     console.log('🧙 Foundry Familiar | Initializing module');
   }
-  
+
   // Initialize core services
   const llmService = new LLMService();
   const toolSystem = new ToolSystem();
-  
+
   // Initialize manager
   familiarManager = new FamiliarManager(llmService, toolSystem);
 });
@@ -47,17 +47,23 @@ Hooks.once('ready', () => {
   const settings = SettingsManager.getSettings();
   if (settings.enableConsoleLogging) {
     console.log('🧙 Foundry Familiar ready. Commands:');
-    console.log('  game.foundryFamiliar.ask(prompt) - Ask with tool access (full conversation in console)');
+    console.log(
+      '  game.foundryFamiliar.ask(prompt) - Ask with tool access (full conversation in console)'
+    );
     console.log('  game.foundryFamiliar.summon(prompt) - Simple prompt/response');
-    console.log('  game.foundryFamiliar.settings() - Open settings dialog (configure name, icon, system prompt)');
+    console.log(
+      '  game.foundryFamiliar.settings() - Open settings dialog (configure name, icon, system prompt)'
+    );
     console.log('');
     console.log('🧙 Chat Commands:');
     console.log('  /ask <prompt> - Enhanced AI with tools (shows thinking in console)');
     console.log('  /familiar <prompt> - Simple AI response');
     console.log('');
-    console.log('⚙️  Use game.foundryFamiliar.settings() for full configuration (not Module Settings)');
+    console.log(
+      '⚙️  Use game.foundryFamiliar.settings() for full configuration (not Module Settings)'
+    );
   }
-  
+
   // Add settings method to API
   game.foundryFamiliar.settings = () => FamiliarSettingsDialog.show();
 
@@ -77,13 +83,13 @@ Hooks.once('ready', () => {
       const query = message.slice('/familiar'.length).trim();
       if (!query) return true;
 
-      familiarManager.handlePrompt(query).then((response) => {
+      familiarManager.handlePrompt(query).then(response => {
         // Filter out thinking tags and convert markdown to HTML
         const filteredContent = response.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
         const htmlContent = micromark(filteredContent);
-          
-        ChatMessage.create({ 
-          content: `<strong>${SettingsManager.getSettings().familiarIcon} ${SettingsManager.getSettings().familiarName} says:</strong><br>${htmlContent}` 
+
+        ChatMessage.create({
+          content: `<strong>${SettingsManager.getSettings().familiarIcon} ${SettingsManager.getSettings().familiarName} says:</strong><br>${htmlContent}`,
         });
       });
       return false; // Prevent normal chat processing
