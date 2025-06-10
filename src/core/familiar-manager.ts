@@ -3,7 +3,7 @@
  * Coordinates between LLM service, tool system, and Foundry integration
  */
 
-import type { FamiliarAPI, LLMRequest, LLMMessage } from '../types/foundry-types';
+import type { FamiliarAPI, LLMMessage } from '../types/foundry-types';
 import type { LLMService } from './llm-service';
 import type { ToolSystem } from './tool-system';
 import { SettingsManager } from '../settings';
@@ -86,7 +86,7 @@ export class FamiliarManager {
       }
 
       const systemPrompt = this.buildSystemPrompt();
-      let conversationHistory: LLMMessage[] = [
+      const conversationHistory: LLMMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt }
       ];
@@ -98,7 +98,7 @@ export class FamiliarManager {
         console.log('🧙 =====================================');
       }
 
-      let maxIterations = 5;
+      const maxIterations = 5;
       let iteration = 0;
 
       while (iteration < maxIterations) {

@@ -19,10 +19,14 @@ let familiarManager: FamiliarManager;
  * Initialize the Familiar module
  */
 Hooks.once('init', () => {
-  console.log('🧙 Foundry Familiar | Initializing module');
-  
-  // Register module settings
+  // Register module settings first
   SettingsManager.registerSettings();
+  
+  // Only log if console logging is enabled
+  const settings = SettingsManager.getSettings();
+  if (settings.enableConsoleLogging) {
+    console.log('🧙 Foundry Familiar | Initializing module');
+  }
   
   // Initialize core services
   const llmService = new LLMService();
@@ -39,22 +43,26 @@ Hooks.once('ready', () => {
   // Expose global API
   game.foundryFamiliar = familiarManager.getAPI();
 
-  console.log('🧙 Foundry Familiar ready. Commands:');
-  console.log('  game.foundryFamiliar.ask(prompt) - Ask with tool access (full conversation in console)');
-  console.log('  game.foundryFamiliar.summon(prompt) - Simple prompt/response');
-  console.log('  game.foundryFamiliar.settings() - Open settings dialog (configure name, icon, system prompt)');
-  console.log('');
-  console.log('🧙 Chat Commands:');
-  console.log('  /ask <prompt> - Enhanced AI with tools (shows thinking in console)');
-  console.log('  /familiar <prompt> - Simple AI response');
-  console.log('');
-  console.log('⚙️  Use game.foundryFamiliar.settings() for full configuration (not Module Settings)');
+  // Only show help if console logging is enabled
+  const settings = SettingsManager.getSettings();
+  if (settings.enableConsoleLogging) {
+    console.log('🧙 Foundry Familiar ready. Commands:');
+    console.log('  game.foundryFamiliar.ask(prompt) - Ask with tool access (full conversation in console)');
+    console.log('  game.foundryFamiliar.summon(prompt) - Simple prompt/response');
+    console.log('  game.foundryFamiliar.settings() - Open settings dialog (configure name, icon, system prompt)');
+    console.log('');
+    console.log('🧙 Chat Commands:');
+    console.log('  /ask <prompt> - Enhanced AI with tools (shows thinking in console)');
+    console.log('  /familiar <prompt> - Simple AI response');
+    console.log('');
+    console.log('⚙️  Use game.foundryFamiliar.settings() for full configuration (not Module Settings)');
+  }
   
   // Add settings method to API
   game.foundryFamiliar.settings = () => FamiliarSettingsDialog.show();
 
   // Register chat commands
-  Hooks.on('chatMessage', (chatLog, message, chatData) => {
+  Hooks.on('chatMessage', (chatLog, message, _chatData): boolean => {
     // Enhanced ask command with tools
     if (message.startsWith('/ask')) {
       const query = message.slice('/ask'.length).trim();

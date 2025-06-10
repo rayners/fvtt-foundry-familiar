@@ -196,7 +196,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     }
   }
 
-  private async _resetDefaults(html: JQuery) {
+  private async _resetDefaults(_html: JQuery) {
     const confirm = await Dialog.confirm({
       title: 'Reset to Defaults',
       content: '<p>Are you sure you want to reset all Foundry Familiar settings to their default values?</p>',

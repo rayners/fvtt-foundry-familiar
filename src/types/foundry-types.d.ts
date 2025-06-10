@@ -140,9 +140,9 @@ declare global {
   }
 
   interface HooksManager {
-    on(event: string, callback: Function): void;
-    once(event: string, callback: Function): void;
-    off(event: string, callback: Function): void;
+    on(event: string, callback: (...args: any[]) => void): void;
+    once(event: string, callback: (...args: any[]) => void): void;
+    off(event: string, callback: (...args: any[]) => void): void;
     call(event: string, ...args: any[]): boolean;
   }
 

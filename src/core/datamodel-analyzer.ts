@@ -149,7 +149,7 @@ export class DataModelAnalyzer {
   /**
    * Compare data models between different systems
    */
-  compareSystemModels(systemId1: string, systemId2: string): {
+  compareSystemModels(_systemId1: string, _systemId2: string): {
     commonFields: string[];
     uniqueToSystem1: string[];
     uniqueToSystem2: string[];
@@ -468,10 +468,10 @@ export class DataModelAnalyzer {
     // Return common Foundry mixins if detected
     const mixins: string[] = [];
     
-    if (docClass.prototype.hasOwnProperty('sheet')) {
+    if (Object.prototype.hasOwnProperty.call(docClass.prototype, 'sheet')) {
       mixins.push('SheetMixin');
     }
-    if (docClass.prototype.hasOwnProperty('testUserPermission')) {
+    if (Object.prototype.hasOwnProperty.call(docClass.prototype, 'testUserPermission')) {
       mixins.push('PermissionMixin');
     }
     
@@ -491,7 +491,7 @@ export class DataModelAnalyzer {
             initial: (field as any).initial
           };
         }
-      } catch (error) {
+      } catch {
         // Schema definition might require instantiation
       }
     }
@@ -499,7 +499,7 @@ export class DataModelAnalyzer {
     return fields;
   }
 
-  private extractValidationRules(docClass: any): Record<string, any> {
+  private extractValidationRules(_docClass: any): Record<string, any> {
     // Validation rules are typically embedded in field definitions
     // This would require deeper schema analysis
     return {};
