@@ -3,51 +3,21 @@ name: Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Use Node.js
-      uses: actions/setup-node@v4
+    - name: Build and Release Module
+      uses: rayners/foundry-module-actions/release@v2
       with:
         node-version: '18'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Run tests
-      run: npm run test:run
-
-    - name: Build
-      run: npm run build
-
-    - name: Create module archive
-      run: |
-        cd dist
-        zip -r ../module.zip .
-        cd ..
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+        build-command: 'npm run build'
+        working-directory: 'dist'
+        module-files: 'module.js module.json templates/ styles/ languages/ README.md CHANGELOG.md LICENSE'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./module.zip
-        asset_name: module.zip
-        asset_content_type: application/zip
-
-    - name: Upload module.json
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/module.json
-        asset_name: module.json
-        asset_content_type: application/json
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
