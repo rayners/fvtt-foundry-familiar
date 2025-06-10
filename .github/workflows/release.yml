@@ -1,12 +1,12 @@
-name: Release
+# Foundry Familiar Release Workflow
+# Builds and packages the module for FoundryVTT distribution
+
+name: Release Module
 
 on:
   release:
     types: [published]
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   build:
