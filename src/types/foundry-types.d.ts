@@ -20,6 +20,9 @@ declare global {
     time: {
       worldTime: number;
     };
+    system: any;
+    version: string;
+    settings: any;
   }
 
   interface Window {
@@ -29,6 +32,13 @@ declare global {
     ChatMessage: typeof ChatMessage;
     renderTemplate: (template: string, data: any) => Promise<string>;
   }
+
+  const CONFIG: any;
+  const global: any;
+  const FormApplication: any;
+  const mergeObject: any;
+  const Dialog: any;
+  const ui: any;
 
   interface FoundryUser {
     id: string;
@@ -48,6 +58,7 @@ declare global {
     getName(name: string): T | undefined;
     [Symbol.iterator](): Iterator<T>;
     values(): IterableIterator<T>;
+    entries(): IterableIterator<[string, T]>;
     forEach(callback: (value: T, key: string) => void): void;
   }
 

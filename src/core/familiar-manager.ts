@@ -66,6 +66,7 @@ export class FamiliarManager {
       });
     } catch (error) {
       console.error('Familiar error:', error);
+      const settings = SettingsManager.getSettings();
       await ChatMessage.create({
         content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ The familiar encountered a magical disturbance.`,
       });
@@ -208,6 +209,7 @@ export class FamiliarManager {
         content: `<strong>${settings.familiarIcon} ${settings.familiarName} says:</strong><br>⚠️ I got a bit confused trying to use my tools. Let me try a simpler approach.`,
       });
     } catch (error) {
+      const settings = SettingsManager.getSettings();
       if (settings.enableConsoleLogging) {
         console.log('🧙 💥 CONVERSATION ERROR:', error);
         console.log('🧙 === CONVERSATION END (ERROR) ===\n');
