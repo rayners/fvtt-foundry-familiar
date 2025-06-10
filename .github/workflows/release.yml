@@ -9,22 +9,20 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Required for version tag extraction
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for version tag extraction
 
-    - name: Build and Release Module
-      uses: rayners/foundry-module-actions/release@v2
-      with:
-        node-version: '18'
-        build-command: 'npm run build'
-        working-directory: 'dist'
-        module-files: 'module.js module.json templates/ styles/ languages/ README.md CHANGELOG.md LICENSE'
+      - name: Release Foundry Familiar
+        uses: rayners/foundry-module-actions/release@v2
+        with:
+          node-version: '18'
+          build-command: 'npm run build'
+          working-directory: 'dist'
+          module-files: 'module.js module.json templates/ styles/ languages/ README.md CHANGELOG.md LICENSE'
