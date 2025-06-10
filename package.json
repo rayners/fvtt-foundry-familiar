@@ -45,7 +45,6 @@
   ],
   "devDependencies": {
     "@rayners/foundry-dev-tools": "^1.1.3",
-    "@rayners/foundry-test-utils": "^1.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jquery": "^3.5.32",
