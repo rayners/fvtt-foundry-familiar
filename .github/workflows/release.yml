@@ -26,5 +26,3 @@ jobs:
         build-command: 'npm run build'
         working-directory: 'dist'
         module-files: 'module.js module.json templates/ styles/ languages/ README.md CHANGELOG.md LICENSE'
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
