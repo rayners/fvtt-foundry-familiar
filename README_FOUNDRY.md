@@ -2,6 +2,10 @@
 
 **An AI-powered magical assistant for your FoundryVTT campaigns**
 
+Foundry Familiar brings the power of artificial intelligence directly into your FoundryVTT interface. Like a magical familiar that has read all your campaign notes, this AI assistant can answer questions about your world, summarize journal entries, and help you manage your campaign more effectively.
+
+Imagine having a tireless assistant who has memorized every detail of your campaign world. Foundry Familiar uses advanced AI technology to provide exactly that - an intelligent companion that can read your journals, answer questions about your NPCs, summarize plot threads, and help you stay organized as a Game Master.
+
 [![Support on Patreon](https://img.shields.io/badge/Patreon-Support%20Development-ff424d?style=flat-square&logo=patreon)](https://patreon.com/rayners)
 
 > ⚠️ **EARLY ALPHA - VERY LIMITED TESTING** ⚠️
@@ -12,13 +16,7 @@
 > 
 > **Not recommended for any games - use at your own risk!**
 
-Foundry Familiar brings the power of artificial intelligence directly into your FoundryVTT interface. Like a magical familiar that has read all your campaign notes, this AI assistant can answer questions about your world, summarize journal entries, and help you manage your campaign more effectively.
-
 ---
-
-## 🌟 What is Foundry Familiar?
-
-Imagine having a tireless assistant who has memorized every detail of your campaign world. Foundry Familiar uses advanced AI technology to provide exactly that - an intelligent companion that can read your journals, answer questions about your NPCs, summarize plot threads, and help you stay organized as a Game Master.
 
 **Perfect for Game Masters who want to:**
 
