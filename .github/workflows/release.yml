@@ -11,7 +11,14 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for version tag extraction
+
     - name: Build and Release Module
       uses: rayners/foundry-module-actions/release@v2
       with:
