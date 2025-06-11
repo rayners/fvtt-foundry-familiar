@@ -28,4 +28,4 @@ jobs:
           codecov: true
           codecov-slug: rayners/fvtt-foundry-familiar
           coverage-node-version: '18'
-          codecov-token: ${{ secrets.CODECOV_TOKEN }}
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}# Re-trigger CI
