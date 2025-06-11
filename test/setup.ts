@@ -105,18 +105,24 @@ const createMockJournalEntry = (name: string, content: string = '') => {
 };
 
 // Create mock actors and scenes for testing
-const createMockActor = (id: string, name: string, type: string = 'npc', folderName?: string, biography?: string) => ({
+const createMockActor = (
+  id: string,
+  name: string,
+  type: string = 'npc',
+  folderName?: string,
+  biography?: string
+) => ({
   id,
   name,
   type,
   folder: folderName ? { name: folderName } : undefined,
-  system: { 
-    details: { 
-      biography: { 
-        value: biography || `<p>A fearsome ${name.toLowerCase()} with incredible power.</p>` 
-      } 
-    } 
-  }
+  system: {
+    details: {
+      biography: {
+        value: biography || `<p>A fearsome ${name.toLowerCase()} with incredible power.</p>`,
+      },
+    },
+  },
 });
 
 const createMockScene = (id: string, name: string, active: boolean = false) => ({
@@ -143,8 +149,26 @@ beforeEach(() => {
   journalCollection.set('empty-journal', createMockJournalEntry('Empty Journal', ''));
 
   const actorCollection = new MockCollection<any>();
-  actorCollection.set('actor1', createMockActor('actor1', 'Red Dragon', 'npc', 'Dragons', '<p>A fearsome red dragon with incredible power.</p>'));
-  actorCollection.set('actor2', createMockActor('actor2', 'Blue Drake', 'npc', undefined, '<p>A blue drake that breathes red lightning.</p>'));
+  actorCollection.set(
+    'actor1',
+    createMockActor(
+      'actor1',
+      'Red Dragon',
+      'npc',
+      'Dragons',
+      '<p>A fearsome red dragon with incredible power.</p>'
+    )
+  );
+  actorCollection.set(
+    'actor2',
+    createMockActor(
+      'actor2',
+      'Blue Drake',
+      'npc',
+      undefined,
+      '<p>A blue drake that breathes red lightning.</p>'
+    )
+  );
 
   const sceneCollection = new MockCollection<any>();
   sceneCollection.set('scene1', createMockScene('scene1', 'Dragon Lair', true));
@@ -158,13 +182,17 @@ beforeEach(() => {
   global.game = mockGame as any;
   global.Hooks = mockHooks as any;
   global.ChatMessage = mockChatMessage as any;
-  
+
   // Add missing global constants for type definitions
   global.CONFIG = {};
   global.global = global;
   global.FormApplication = class MockFormApplication {
-    static get defaultOptions() { return {}; }
-    async getData() { return {}; }
+    static get defaultOptions() {
+      return {};
+    }
+    async getData() {
+      return {};
+    }
     activateListeners(_html: any) {}
     async _updateObject(_event: any, _formData: any) {}
     render(_force?: boolean) {}
