@@ -8,6 +8,12 @@ import type { LLMRequest, LLMResponse } from '../types/foundry-types';
 import { SettingsManager } from '../settings';
 
 export class LLMService {
+  private customEndpoint?: string;
+
+  constructor(customEndpoint?: string) {
+    this.customEndpoint = customEndpoint;
+  }
+
   /**
    * Send request to LLM API using current settings
    */
@@ -18,7 +24,7 @@ export class LLMService {
     try {
       if (shouldLog) {
         console.log('🌐 === LLM API REQUEST ===');
-        console.log('🌐 Endpoint:', settings.llmEndpoint);
+        console.log('🌐 Endpoint:', this.customEndpoint || settings.llmEndpoint);
         console.log('🌐 Model:', request.model);
         console.log('🌐 Messages:', request.messages.length);
         console.log('🌐 Temperature:', request.temperature);
@@ -34,7 +40,8 @@ export class LLMService {
         headers['Authorization'] = `Bearer ${settings.apiKey}`;
       }
 
-      const response = await fetch(settings.llmEndpoint, {
+      const endpoint = this.customEndpoint || settings.llmEndpoint;
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers,
         body: JSON.stringify(request),

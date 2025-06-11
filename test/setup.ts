@@ -5,6 +5,43 @@
 
 import { vi, beforeEach } from 'vitest';
 
+// Set up FormApplication IMMEDIATELY before any other code runs
+const MockFormApplication = class {
+  static get defaultOptions() {
+    return {
+      classes: ['form'],
+      popOut: true,
+      editable: true,
+      closeOnSubmit: true,
+      submitOnChange: false,
+      resizable: false,
+    };
+  }
+  
+  constructor(_options: any = {}) {
+    // Mock constructor
+  }
+  
+  async getData() {
+    return {};
+  }
+  
+  activateListeners(_html: any) {}
+  
+  async _updateObject(_event: any, _formData: any) {}
+  
+  render(_force?: boolean) {
+    return this;
+  }
+  
+  close() {
+    return Promise.resolve();
+  }
+};
+
+global.FormApplication = MockFormApplication;
+global.mergeObject = vi.fn((target, source) => ({ ...target, ...source }));
+
 // Mock Collection class
 class MockCollection<T> extends Map<string, T> {
   getName(name: string): T | undefined {
@@ -65,7 +102,25 @@ const mockGame = {
   system: { id: 'test-system', title: 'Test System' },
   version: '12.0.0',
   settings: {
-    get: vi.fn(),
+    get: vi.fn((module, key) => {
+      // Mock familiar settings with defaults
+      if (module === 'foundry-familiar') {
+        const defaults = {
+          llmEndpoint: 'http://localhost:3000/v1/chat/completions',
+          apiKey: '',
+          model: 'gpt-4',
+          temperature: 0.7,
+          maxTokens: 1000,
+          systemPrompt: 'You are a helpful AI assistant.',
+          enableConsoleLogging: false,
+          enableToolCalls: true,
+          familiarName: 'Familiar',
+          familiarIcon: '🧙',
+        };
+        return defaults[key];
+      }
+      return undefined;
+    }),
     set: vi.fn(),
     register: vi.fn(),
     registerMenu: vi.fn(),
@@ -186,18 +241,6 @@ beforeEach(() => {
   // Add missing global constants for type definitions
   global.CONFIG = {};
   global.global = global;
-  global.FormApplication = class MockFormApplication {
-    static get defaultOptions() {
-      return {};
-    }
-    async getData() {
-      return {};
-    }
-    activateListeners(_html: any) {}
-    async _updateObject(_event: any, _formData: any) {}
-    render(_force?: boolean) {}
-  };
-  global.mergeObject = vi.fn((target, source) => ({ ...target, ...source }));
   global.Dialog = { confirm: vi.fn() };
   global.ui = { notifications: { info: vi.fn(), error: vi.fn() } };
 

@@ -43,7 +43,8 @@ describe('ToolSystem', () => {
     it('should handle tool errors gracefully', async () => {
       const result = await toolSystem.executeTool('list_collection', 'nonexistent_type');
 
-      expect(result).toContain('Error');
+      expect(result).toContain('Unknown collection type');
+      expect(result).toContain('Available types');
     });
   });
 
@@ -71,8 +72,9 @@ describe('ToolSystem', () => {
     it('should format collection listing output correctly', async () => {
       const result = await toolSystem.executeTool('list_collection', 'journals');
 
-      expect(result).toContain('Found');
-      expect(result).toContain('journals');
+      expect(result).toContain('RESULT: list_collection');
+      expect(result).toContain('COUNT:');
+      expect(result).toContain('ENTRIES:');
     });
 
     it('should handle empty search results', async () => {
