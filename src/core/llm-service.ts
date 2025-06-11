@@ -2,6 +2,7 @@
  * LLM Service for handling API communication
  * Supports OpenAI-compatible endpoints
  */
+/* eslint-disable no-console */
 
 import type { LLMRequest, LLMResponse } from '../types/foundry-types';
 import { SettingsManager } from '../settings';

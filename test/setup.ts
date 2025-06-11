@@ -5,32 +5,6 @@
 
 import { vi, beforeEach } from 'vitest';
 
-// Mock Foundry global objects
-const mockGame = {
-  journal: new Map(),
-  user: { id: 'test-user', name: 'Test User', isGM: true },
-  users: new Map(),
-  modules: new Map(),
-  socket: {
-    on: vi.fn(),
-    emit: vi.fn(),
-  },
-  time: {
-    worldTime: 0,
-  },
-};
-
-const mockHooks = {
-  on: vi.fn(),
-  once: vi.fn(),
-  off: vi.fn(),
-  call: vi.fn(),
-};
-
-const mockChatMessage = {
-  create: vi.fn().mockResolvedValue({ id: 'test-message' }),
-};
-
 // Mock Collection class
 class MockCollection<T> extends Map<string, T> {
   getName(name: string): T | undefined {
@@ -45,7 +19,69 @@ class MockCollection<T> extends Map<string, T> {
   get size(): number {
     return super.size;
   }
+
+  entries(): IterableIterator<[string, T]> {
+    return super.entries();
+  }
+
+  values(): IterableIterator<T> {
+    return super.values();
+  }
+
+  forEach(callback: (value: T, key: string) => void): void {
+    for (const [key, value] of this) {
+      callback(value, key);
+    }
+  }
+
+  *[Symbol.iterator](): Iterator<T> {
+    for (const value of super.values()) {
+      yield value;
+    }
+  }
 }
+
+// Mock Foundry global objects
+const mockGame = {
+  journal: new MockCollection(),
+  scenes: new MockCollection(),
+  actors: new MockCollection(),
+  items: new MockCollection(),
+  playlists: new MockCollection(),
+  tables: new MockCollection(),
+  macros: new MockCollection(),
+  cards: new MockCollection(),
+  folders: new MockCollection(),
+  user: { id: 'test-user', name: 'Test User', isGM: true },
+  users: new MockCollection(),
+  modules: new MockCollection(),
+  socket: {
+    on: vi.fn(),
+    emit: vi.fn(),
+  },
+  time: {
+    worldTime: 0,
+  },
+  system: { id: 'test-system', title: 'Test System' },
+  version: '12.0.0',
+  settings: {
+    get: vi.fn(),
+    set: vi.fn(),
+    register: vi.fn(),
+    registerMenu: vi.fn(),
+  },
+};
+
+const mockHooks = {
+  on: vi.fn(),
+  once: vi.fn(),
+  off: vi.fn(),
+  call: vi.fn(),
+};
+
+const mockChatMessage = {
+  create: vi.fn().mockResolvedValue({ id: 'test-message' }),
+};
 
 // Mock journal entry page
 const createMockJournalPage = (id: string, name: string, content: string = '') => ({
@@ -68,12 +104,37 @@ const createMockJournalEntry = (name: string, content: string = '') => {
   };
 };
 
+// Create mock actors and scenes for testing
+const createMockActor = (id: string, name: string, type: string = 'npc', folderName?: string, biography?: string) => ({
+  id,
+  name,
+  type,
+  folder: folderName ? { name: folderName } : undefined,
+  system: { 
+    details: { 
+      biography: { 
+        value: biography || `<p>A fearsome ${name.toLowerCase()} with incredible power.</p>` 
+      } 
+    } 
+  }
+});
+
+const createMockScene = (id: string, name: string, active: boolean = false) => ({
+  id,
+  name,
+  active,
+  navigation: false,
+  tokens: new MockCollection(),
+  notes: new MockCollection(),
+  lights: new MockCollection(),
+});
+
 // Setup global mocks
 beforeEach(() => {
   // Clear all mocks
   vi.clearAllMocks();
 
-  // Setup fresh journal collection
+  // Setup fresh collections with test data
   const journalCollection = new MockCollection<any>();
   journalCollection.set(
     'test-journal',
@@ -81,12 +142,36 @@ beforeEach(() => {
   );
   journalCollection.set('empty-journal', createMockJournalEntry('Empty Journal', ''));
 
+  const actorCollection = new MockCollection<any>();
+  actorCollection.set('actor1', createMockActor('actor1', 'Red Dragon', 'npc', 'Dragons', '<p>A fearsome red dragon with incredible power.</p>'));
+  actorCollection.set('actor2', createMockActor('actor2', 'Blue Drake', 'npc', undefined, '<p>A blue drake that breathes red lightning.</p>'));
+
+  const sceneCollection = new MockCollection<any>();
+  sceneCollection.set('scene1', createMockScene('scene1', 'Dragon Lair', true));
+
+  // Update game collections
   mockGame.journal = journalCollection;
+  mockGame.actors = actorCollection;
+  mockGame.scenes = sceneCollection;
 
   // Setup globals
   global.game = mockGame as any;
   global.Hooks = mockHooks as any;
   global.ChatMessage = mockChatMessage as any;
+  
+  // Add missing global constants for type definitions
+  global.CONFIG = {};
+  global.global = global;
+  global.FormApplication = class MockFormApplication {
+    static get defaultOptions() { return {}; }
+    async getData() { return {}; }
+    activateListeners(_html: any) {}
+    async _updateObject(_event: any, _formData: any) {}
+    render(_force?: boolean) {}
+  };
+  global.mergeObject = vi.fn((target, source) => ({ ...target, ...source }));
+  global.Dialog = { confirm: vi.fn() };
+  global.ui = { notifications: { info: vi.fn(), error: vi.fn() } };
 
   // Mock fetch for LLM API calls
   global.fetch = vi.fn().mockResolvedValue({

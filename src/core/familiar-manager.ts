@@ -2,6 +2,7 @@
  * Core manager for Familiar functionality
  * Coordinates between LLM service, tool system, and Foundry integration
  */
+/* eslint-disable no-console */
 
 import type { FamiliarAPI, LLMMessage } from '../types/foundry-types';
 import type { LLMService } from './llm-service';

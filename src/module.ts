@@ -2,6 +2,7 @@
  * FVTT Familiar - AI-powered assistant for Foundry VTT
  * Provides LLM integration for campaign assistance and content generation
  */
+/* eslint-disable no-console */
 
 // Import styles to trigger SCSS compilation
 import './styles/familiar.scss';
@@ -39,7 +40,7 @@ Hooks.once('init', () => {
 /**
  * Setup API and register commands when ready
  */
-Hooks.once('ready', () => {
+Hooks.once('ready', (): void => {
   // Expose global API
   game.foundryFamiliar = familiarManager.getAPI();
 
@@ -65,7 +66,7 @@ Hooks.once('ready', () => {
   }
 
   // Add settings method to API
-  game.foundryFamiliar.settings = () => FamiliarSettingsDialog.show();
+  game.foundryFamiliar.settings = (): void => FamiliarSettingsDialog.show();
 
   // Register chat commands
   Hooks.on('chatMessage', (chatLog, message, _chatData): boolean => {

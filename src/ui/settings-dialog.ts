@@ -2,11 +2,12 @@
  * Settings configuration dialog for Foundry Familiar
  * Provides advanced configuration options and connection testing
  */
+/* eslint-disable no-console */
 
 import { SettingsManager } from '../settings';
 
 export class FamiliarSettingsDialog extends FormApplication {
-  static get defaultOptions() {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       id: 'familiar-settings',
       title: 'Foundry Familiar Configuration',
@@ -21,7 +22,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     });
   }
 
-  async getData() {
+  async getData(): Promise<any> {
     const settings = SettingsManager.getSettings();
 
     return {
@@ -48,7 +49,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     };
   }
 
-  activateListeners(html: JQuery) {
+  activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
     // Test connection button
@@ -91,7 +92,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     this._initializeDropdowns(html);
   }
 
-  private _initializeDropdowns(html: JQuery) {
+  private _initializeDropdowns(html: JQuery): void {
     const settings = SettingsManager.getSettings();
 
     // Set endpoint dropdown
@@ -125,7 +126,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     }
   }
 
-  async _updateObject(event: Event, formData: any) {
+  async _updateObject(event: Event, formData: any): Promise<void> {
     try {
       // Save all settings
       for (const [key, value] of Object.entries(formData)) {
@@ -144,7 +145,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     }
   }
 
-  private async _testConnection(html: JQuery) {
+  private async _testConnection(html: JQuery): Promise<void> {
     const button = html.find('#test-connection');
     const originalText = button.text();
 
@@ -205,7 +206,7 @@ export class FamiliarSettingsDialog extends FormApplication {
     }
   }
 
-  private async _resetDefaults(_html: JQuery) {
+  private async _resetDefaults(_html: JQuery): Promise<void> {
     const confirm = await Dialog.confirm({
       title: 'Reset to Defaults',
       content:
@@ -228,7 +229,7 @@ export class FamiliarSettingsDialog extends FormApplication {
   /**
    * Show the settings dialog
    */
-  static show() {
+  static show(): void {
     new FamiliarSettingsDialog().render(true);
   }
 }
