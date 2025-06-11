@@ -9,20 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Documentation improvements and user guides
-- Enhanced error handling and validation
-
-### Changed
-
-- Improved settings dialog user experience
-- Better visual design for reference section
+## [0.1.1] - 2025-06-10
 
 ### Fixed
 
-- Dropdown text alignment issues in settings dialog
-- Connection test functionality improvements
+- TypeScript linting errors and code quality improvements
+- GitHub Actions CI workflow authentication issues
+- Unused variable and import cleanup
+- Function parameter naming for better linting compliance
+- Object property access patterns (hasOwnProperty usage)
+
+### Technical Improvements
+
+- Enhanced build system reliability
+- Improved CI/CD pipeline with proper authentication
+- Better code quality standards enforcement
+- Cleaner TypeScript compilation output
 
 ## [0.1.0] - 2024-12-09
 

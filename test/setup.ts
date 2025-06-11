@@ -17,23 +17,23 @@ const MockFormApplication = class {
       resizable: false,
     };
   }
-  
+
   constructor(_options: any = {}) {
     // Mock constructor
   }
-  
+
   async getData() {
     return {};
   }
-  
+
   activateListeners(_html: any) {}
-  
+
   async _updateObject(_event: any, _formData: any) {}
-  
+
   render(_force?: boolean) {
     return this;
   }
-  
+
   close() {
     return Promise.resolve();
   }

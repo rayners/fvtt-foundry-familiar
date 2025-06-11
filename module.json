@@ -3,7 +3,7 @@
   "name": "foundry-familiar",
   "title": "Foundry Familiar",
   "description": "AI-powered assistant for Foundry VTT with configurable LLM integration, comprehensive tool system, and campaign analysis capabilities",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "compatibility": {
     "minimum": "11",
     "verified": "13",
