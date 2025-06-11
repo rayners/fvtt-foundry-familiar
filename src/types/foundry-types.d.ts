@@ -35,10 +35,33 @@ declare global {
 
   const CONFIG: any;
   const global: any;
-  const FormApplication: any;
   const mergeObject: any;
   const Dialog: any;
   const ui: any;
+
+  namespace FormApplication {
+    interface Options {
+      id?: string;
+      title?: string;
+      template?: string;
+      width?: number;
+      height?: number;
+      closeOnSubmit?: boolean;
+      submitOnChange?: boolean;
+      resizable?: boolean;
+      classes?: string[];
+      tabs?: any[];
+    }
+  }
+
+  abstract class FormApplication {
+    static get defaultOptions(): FormApplication.Options;
+    activateListeners(html: JQuery): void;
+    getData(): Promise<any> | any;
+    _updateObject(event: Event, formData: any): Promise<void> | void;
+    render(force?: boolean): any;
+    close(): Promise<void>;
+  }
 
   interface FoundryUser {
     id: string;
