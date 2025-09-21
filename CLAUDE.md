@@ -1,80 +1,106 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code (claude.ai/code) when working in this repository.
 
 ## Module Overview
 
-Foundry Familiar is a simple FoundryVTT module that integrates a large language model (LLM) into the game interface. It provides a "magical familiar" that can answer questions, summarize content, and assist GMs with campaign management through AI.
+Foundry Familiar is a Foundry VTT module that provides an AI-powered "magical familiar" assistant. The module is written in TypeScript and bundles through Rollup into `dist/module.js`.
 
-## Architecture
+- Entry point: `src/module.ts` wires up Hooks, registers settings, exposes the `game.foundryFamiliar` API, and binds chat commands.
+- Core services live under `src/core/` and are composed through the `FamiliarManager` class.
+- UI assets (settings dialog template + SCSS) are located in `templates/` and `src/styles/`.
 
-### Core Components
+## Architecture Snapshot
 
-- **familiar.js**: Single-file module containing all functionality
-- **module.json**: Standard FoundryVTT module manifest
-- **LLM Integration**: Uses OpenAI-compatible API endpoints (default: localhost:3000)
+### Core Services
 
-### Key Functions
+- **FamiliarManager** (`src/core/familiar-manager.ts`)
+  - Bridges the Foundry chat commands and exposed API to the LLM + tool subsystems.
+  - Filters `<think>` tags, converts Markdown responses to HTML via `micromark`, and posts chat messages.
+  - Coordinates iterative tool usage (up to 5 loops) while logging when console logging is enabled.
 
-- `game.foundryFamiliar.ask()`: Main tool-enhanced interface with journal access
-- `game.foundryFamiliar.summon()`: Simple prompt/response interface
-- `game.foundryFamiliar.settings()`: Opens settings configuration dialog
+- **LLMService** (`src/core/llm-service.ts`)
+  - Wraps `fetch` calls to OpenAI-compatible `/chat/completions` endpoints.
+  - Inserts API key headers when configured and surfaces detailed error messages.
+  - Handles abort signalling for connection tests in the settings dialog.
 
-### Tool System
+- **ToolSystem** (`src/core/tool-system.ts`)
+  - Provides structured tool handlers (`list_collection`, `get_collection_member`, `search_collection`, `list_by_folder`, etc.).
+  - Uses `CollectionAnalyzer` and `DataModelAnalyzer` helpers to inspect Foundry collections, folders, and document metadata.
+  - Returns combined results that include an LLM-oriented format plus a user-facing view for console logging.
 
-The module implements a simple tool-calling system for LLM access to Foundry data:
+### Settings and UI
 
-- `list_journals()`: Returns available journal entries
-- `read_journal(name)`: Reads full journal content
-- `search_journals(query)`: Searches journals by content/name
+- **SettingsManager** (`src/settings.ts`)
+  - Registers hidden world-scope settings for endpoint, API key, model, temperature, max tokens, system prompt, logging toggles, and familiar personalization.
+  - Exposes strongly typed getters/setters used throughout the module.
 
-## Development Notes
-
-### LLM Integration Pattern
-
-- Uses OpenAI-compatible chat completions API
-- Hardcoded to localhost:3000 endpoint (typical for local proxy)
-- Tool calls parsed via regex from LLM responses
-- Conversation history maintained for multi-turn interactions
+- **FamiliarSettingsDialog** (`src/ui/settings-dialog.ts` + `templates/settings-dialog.hbs`)
+  - Custom FormApplication providing tabbed configuration, connection testing, and preset endpoints/models.
+  - Calls `LLMService.testConnection` and persists settings via `SettingsManager`.
 
 ### Foundry Integration
 
-- Registers global `game.foundryFamiliar` API on ready hook
-- Uses `game.journal` collection for data access
-- Outputs responses via `ChatMessage.create()`
-- Strips HTML from journal content for cleaner LLM consumption
+- Hooks registered in `src/module.ts` expose `game.foundryFamiliar` with `ask`, `summon`, and `settings` methods and register `/ask` + `/familiar` chat commands.
+- Chat messages render the familiar response with configured name/icon and Markdown-rendered content.
+- Tool execution triggers browser notifications and console diagnostics when enabled.
 
-### Current Status
+## Development Context
 
-- Basic functionality implemented but much code commented out
-- Socket handling for multiplayer partially implemented but disabled
-- No UI components - purely API-driven
-- No configuration system - settings hardcoded
+For shared development standards and architectural references, consult the Development Context repository checked out at `./dev-context/`:
+
+- [Development Context Reference](dev-context/README.md)
+- Development workflow: [dev-context/foundry-development-practices.md](dev-context/foundry-development-practices.md)
+- Testing standards: [dev-context/testing-practices.md](dev-context/testing-practices.md)
+- Architecture patterns: [dev-context/module-architecture-patterns.md](dev-context/module-architecture-patterns.md)
+- Documentation standards: [dev-context/documentation-standards.md](dev-context/documentation-standards.md)
+
+Review `dev-context/ai-code-access-restrictions.md` before working with any proprietary Foundry content.
 
 ## Common Tasks
 
-### Testing the Module
+### Installing Dependencies
 
-```javascript
-// Test basic functionality
-game.foundryFamiliar.summon('Tell me about this world');
-
-// Test tool integration with journal access
-game.foundryFamiliar.ask('List all journals in this campaign');
-
-// Test settings dialog
-game.foundryFamiliar.settings();
+```bash
+npm install
 ```
 
-### Debugging
+### Quality Pipeline
 
-- Check browser console for LLM API responses and tool execution logs
-- Verify LLM endpoint is accessible at localhost:3000
-- Use `game.foundryFamiliar.ask("list journals")` to verify journal access through tools
+Run the full validation stack (lint, format check, type check, tests, build):
 
-### Architecture Considerations
+```bash
+npm run validate
+```
 
-- Module is designed to work entirely client-side (no server components)
-- Assumes local LLM proxy running on localhost:3000
-- Tool system is extensible but currently limited to journal operations
-- Error handling is basic - failed API calls return friendly error messages
+Individual tasks:
+
+- Lint: `npm run lint`
+- Format check: `npm run format:check`
+- Type check: `npm run typecheck`
+- Unit tests (Vitest + jsdom): `npm run test:run`
+- Production build: `npm run build`
+
+### Local Development
+
+- `npm run dev` / `npm run build:watch` – Rollup watcher that rebuilds `dist/`.
+- Link into a Foundry data directory using scripts in `package.json` (`npm run link-node`, `npm run link-electron`, or `npm run link-copy`).
+
+### Manual Testing in Foundry
+
+1. Install the module into a Foundry world and ensure the configured endpoint is reachable.
+2. Use `/familiar <prompt>` for simple completions.
+3. Use `/ask <prompt>` to exercise the tool loop—watch the browser console for detailed traces.
+4. Open the Familiar configuration dialog via `game.foundryFamiliar.settings()` to adjust endpoint/model, toggle tool usage, and test connectivity.
+
+## Debugging Tips
+
+- Enable "Console Logging" in the Familiar settings dialog to inspect LLM payloads, tool calls, and results.
+- Tool results include both LLM-formatted and user-facing blocks—only the user view should be surfaced to players.
+- Connection tests in the settings dialog will warn if the endpoint rejects credentials, timeouts, or returns non-2xx responses.
+
+## Release Notes
+
+- `module.json` controls Foundry metadata, compatibility, and manifest URLs. Update before packaging releases.
+- `ROLLUP` build outputs to `dist/`; ensure the folder is regenerated (`npm run build`) before distributing the module.
+
